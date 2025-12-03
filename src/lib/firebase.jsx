@@ -1,5 +1,3 @@
-// src/lib/firebase.js
-
 import { initializeApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -37,7 +35,11 @@ if (typeof window !== 'undefined') {
       auth = getAuth(firebaseApp);
       db = getFirestore(firebaseApp);
       storage = getStorage(firebaseApp);
-      analytics = getAnalytics(firebaseApp);
+      
+      // Initialize Analytics only if we have measurementId and in production
+      if (firebaseConfig.measurementId && process.env.NODE_ENV === 'production') {
+        analytics = getAnalytics(firebaseApp);
+      }
       
       console.log('✅ Firebase services initialized');
     } catch (error) {
@@ -49,7 +51,6 @@ if (typeof window !== 'undefined') {
     auth = getAuth(firebaseApp);
     db = getFirestore(firebaseApp);
     storage = getStorage(firebaseApp);
-    analytics = getAnalytics(firebaseApp);
     console.log('✅ Using existing Firebase app');
   }
 } else {
