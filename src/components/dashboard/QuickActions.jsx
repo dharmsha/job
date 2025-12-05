@@ -1,157 +1,130 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { 
-  Briefcase,
-  Users,
-  FileText,
-  Settings,
-  Bell,
+  Briefcase, 
+  Users, 
+  Settings, 
+  Bell, 
+  MessageSquare, 
   BarChart,
-  MessageSquare,
-  Download,
-  Plus,
   Calendar,
-  Award,
-  Mail
+  FileText
 } from 'lucide-react';
 
-export default function QuickActions() {
-  const router = useRouter();
-
+export default function QuickActions({ 
+  user, 
+  stats, 
+  onPostJob, 
+  onViewJobs, 
+  onViewCandidates, 
+  onSettings 
+}) {
   const actions = [
     {
-      title: "Post New Job",
-      description: "Create and publish new job listing",
-      icon: Plus,
-      color: "blue",
-      action: () => router.push('/jobs')
+      icon: <Briefcase className="h-6 w-6 text-blue-600" />,
+      title: 'Post New Job',
+      description: 'Create a new job posting',
+      onClick: onPostJob,
+      color: 'bg-blue-50 hover:bg-blue-100 text-blue-600'
     },
     {
-      title: "View All Applicants",
-      description: "Browse all candidate applications",
-      icon: Users,
-      color: "green",
-      action: () => router.push('/institutes/applications')
+      icon: <Users className="h-6 w-6 text-green-600" />,
+      title: 'Browse Candidates',
+      description: 'View candidate profiles',
+      onClick: onViewCandidates,
+      color: 'bg-green-50 hover:bg-green-100 text-green-600'
     },
     {
-      title: "Generate Report",
-      description: "Create placement analytics report",
-      icon: BarChart,
-      color: "purple",
-      action: () => router.push('/institutes/reports')
+      icon: <FileText className="h-6 w-6 text-purple-600" />,
+      title: 'View Applications',
+      description: 'See all applications',
+      onClick: () => window.location.href = '/institutes/applications',
+      color: 'bg-purple-50 hover:bg-purple-100 text-purple-600'
     },
     {
-      title: "Send Announcement",
-      description: "Notify all students about opportunities",
-      icon: Bell,
-      color: "orange",
-      action: () => router.push('/institutes/announcements')
+      icon: <MessageSquare className="h-6 w-6 text-yellow-600" />,
+      title: 'Messages',
+      description: 'Chat with candidates',
+      onClick: () => window.location.href = '/messages',
+      color: 'bg-yellow-50 hover:bg-yellow-100 text-yellow-600'
     },
     {
-      title: "Message Candidates",
-      description: "Contact shortlisted candidates",
-      icon: MessageSquare,
-      color: "red",
-      action: () => router.push('/institutes/messages')
+      icon: <BarChart className="h-6 w-6 text-red-600" />,
+      title: 'Analytics',
+      description: 'View insights & reports',
+      onClick: () => window.location.href = '/institutes/analytics',
+      color: 'bg-red-50 hover:bg-red-100 text-red-600'
     },
     {
-      title: "Download Data",
-      description: "Export applications and reports",
-      icon: Download,
-      color: "indigo",
-      action: () => alert('Export feature coming soon!')
+      icon: <Settings className="h-6 w-6 text-gray-600" />,
+      title: 'Settings',
+      description: 'Manage institute profile',
+      onClick: onSettings,
+      color: 'bg-gray-50 hover:bg-gray-100 text-gray-600'
     }
   ];
 
-  const upcomingInterviews = [
-    { name: "Rahul Sharma", time: "10:30 AM", date: "Today", position: "Math Teacher" },
-    { name: "Priya Singh", time: "2:00 PM", date: "Tomorrow", position: "Science Teacher" },
-    { name: "Amit Patel", time: "11:00 AM", date: "Jan 20", position: "English Teacher" }
-  ];
-
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-100">
-      <div className="px-6 py-5 border-b border-gray-200">
-        <h2 className="text-xl font-bold text-gray-900">Quick Actions</h2>
-        <p className="text-sm text-gray-600 mt-1">Frequently used actions for your institute</p>
+    <div className="bg-white rounded-xl shadow p-6">
+      <h2 className="text-xl font-bold mb-6">Quick Actions</h2>
+      
+      <div className="space-y-4">
+        {actions.map((action, index) => (
+          <button
+            key={index}
+            onClick={action.onClick}
+            className={`w-full p-4 rounded-lg flex items-center ${action.color} transition-colors`}
+          >
+            <div className="p-2 bg-white rounded-lg mr-4">
+              {action.icon}
+            </div>
+            <div className="text-left">
+              <p className="font-medium">{action.title}</p>
+              <p className="text-sm opacity-75">{action.description}</p>
+            </div>
+          </button>
+        ))}
       </div>
 
-      <div className="p-6">
-        {/* Quick Action Buttons */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {actions.map((action, index) => {
-            const Icon = action.icon;
-            return (
-              <button
-                key={index}
-                onClick={action.action}
-                className={`group relative p-4 rounded-xl border-2 border-gray-100 hover:border-${action.color}-300 hover:bg-${action.color}-50 transition-all duration-200 hover:shadow-md`}
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className={`p-3 rounded-lg bg-${action.color}-100 text-${action.color}-600 mb-3 group-hover:scale-110 transition-transform duration-200`}>
-                    <Icon className="w-6 h-6" />
-                  </div>
-                  <h3 className="font-semibold text-gray-900 text-sm mb-1">{action.title}</h3>
-                  <p className="text-xs text-gray-500">{action.description}</p>
-                  
-                  <div className={`mt-3 text-xs font-medium text-${action.color}-600 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center`}>
-                    Click to access
-                    <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+      {/* Upcoming Interviews */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-medium text-gray-700">Upcoming Interviews</h3>
+          <Calendar className="h-5 w-5 text-gray-400" />
         </div>
-
-        {/* Upcoming Interviews */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <h4 className="font-semibold text-gray-900 mb-4 flex items-center">
-            <Calendar className="w-5 h-5 mr-2 text-blue-600" />
-            Upcoming Interviews
-          </h4>
-          <div className="space-y-3">
-            {upcomingInterviews.map((interview, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-700 font-bold">
-                      {interview.name.charAt(0)}
-                    </span>
-                  </div>
-                  <div className="ml-3">
-                    <p className="font-medium text-sm">{interview.name}</p>
-                    <p className="text-xs text-gray-600">{interview.position}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="font-medium text-sm">{interview.time}</p>
-                  <p className="text-xs text-gray-600">{interview.date}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <button className="w-full mt-4 text-center text-blue-600 hover:text-blue-800 text-sm font-medium">
-            Schedule New Interview →
-          </button>
-        </div>
-
-        {/* Tips Section */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600">
-              <span className="font-medium">Tip:</span> Respond to applications within 48 hours for better candidate experience
+        <div className="space-y-3">
+          <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+            <div>
+              <p className="font-medium">John Doe</p>
+              <p className="text-sm text-gray-600">Software Engineer</p>
             </div>
-            <button className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center">
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              View Tips
-            </button>
+            <span className="text-sm text-gray-500">Today, 3 PM</span>
+          </div>
+          <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+            <div>
+              <p className="font-medium">Jane Smith</p>
+              <p className="text-sm text-gray-600">Math Teacher</p>
+            </div>
+            <span className="text-sm text-gray-500">Tomorrow, 11 AM</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Institute Info */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <h3 className="font-medium text-gray-700 mb-4">Institute Information</h3>
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Email:</span>
+            <span className="font-medium">{user?.email}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Active Jobs:</span>
+            <span className="font-medium">{stats.totalJobs}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">Total Applications:</span>
+            <span className="font-medium">{stats.totalApplications}</span>
           </div>
         </div>
       </div>
