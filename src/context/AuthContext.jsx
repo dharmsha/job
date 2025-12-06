@@ -14,7 +14,6 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
-import { createUserProfile, getUserProfile } from '@/lib/firebase-helpers';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext({});
@@ -35,12 +34,35 @@ export function AuthProvider({ children }) {
         
         // Get additional user data from Firestore
         try {
-          const result = await getUserProfile(firebaseUser.uid);
-          if (result.success) {
-            setUserData(result.data);
+          const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
+          if (userDoc.exists()) {
+            setUserData(userDoc.data());
+          } else {
+            // If no user data exists, create default
+            const defaultUserData = {
+              uid: firebaseUser.uid,
+              email: firebaseUser.email,
+              name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
+              userType: 'candidate', // Default to candidate
+              phone: '',
+              location: '',
+              skills: [],
+              bio: '',
+              photoURL: firebaseUser.photoURL || '',
+              subscription: 'free',
+              emailVerified: firebaseUser.emailVerified,
+              createdAt: new Date().toISOString()
+            };
+            await setDoc(doc(db, 'users', firebaseUser.uid), defaultUserData);
+            setUserData(defaultUserData);
           }
         } catch (error) {
           console.error('Error fetching user data:', error);
+          setUserData({
+            userType: 'candidate',
+            name: firebaseUser.displayName || 'User',
+            email: firebaseUser.email
+          });
         }
       } else {
         setUser(null);
@@ -71,17 +93,18 @@ export function AuthProvider({ children }) {
         uid: userCredential.user.uid,
         email: email,
         name: userInfo.name,
-        userType: userInfo.userType,
+        userType: userInfo.userType || 'candidate',
         phone: userInfo.phone || '',
         location: userInfo.location || '',
         skills: userInfo.skills || [],
         bio: userInfo.bio || '',
         photoURL: userInfo.photoURL || '',
         subscription: 'free',
-        emailVerified: false
+        emailVerified: false,
+        createdAt: new Date().toISOString()
       };
       
-      await createUserProfile(userCredential.user.uid, userProfileData);
+      await setDoc(doc(db, 'users', userCredential.user.uid), userProfileData);
       
       // Update local state
       setUser(userCredential.user);
@@ -102,9 +125,9 @@ export function AuthProvider({ children }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
       // Get user data from Firestore
-      const result = await getUserProfile(userCredential.user.uid);
-      if (result.success) {
-        setUserData(result.data);
+      const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+      if (userDoc.exists()) {
+        setUserData(userDoc.data());
       }
       
       toast.success('Login successful!');
@@ -117,15 +140,15 @@ export function AuthProvider({ children }) {
   };
 
   // Google Sign In
-  const googleSignIn = async (userType = 'job_seeker') => {
+  const googleSignIn = async (userType = 'candidate') => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       
       // Check if user exists in Firestore
-      const existingUser = await getUserProfile(result.user.uid);
+      const userDoc = await getDoc(doc(db, 'users', result.user.uid));
       
-      if (!existingUser.success) {
+      if (!userDoc.exists()) {
         // First time user - create profile
         const userProfileData = {
           uid: result.user.uid,
@@ -134,13 +157,14 @@ export function AuthProvider({ children }) {
           userType: userType,
           photoURL: result.user.photoURL,
           subscription: 'free',
-          emailVerified: result.user.emailVerified
+          emailVerified: result.user.emailVerified,
+          createdAt: new Date().toISOString()
         };
         
-        await createUserProfile(result.user.uid, userProfileData);
+        await setDoc(doc(db, 'users', result.user.uid), userProfileData);
         setUserData(userProfileData);
       } else {
-        setUserData(existingUser.data);
+        setUserData(userDoc.data());
       }
       
       toast.success('Signed in with Google!');
@@ -215,7 +239,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }
