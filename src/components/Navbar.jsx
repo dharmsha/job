@@ -8,7 +8,7 @@ import {
   Menu, X, Briefcase, User, Search, Home, 
   Building, MessageSquare, LogOut, ChevronDown,
   Users, LayoutDashboard, Phone, Mail, HelpCircle,
-  FileText, Star, Globe, BookOpen
+  FileText, Star, Globe, BookOpen, Lightbulb, MessageCircle
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -19,17 +19,31 @@ export default function Navbar() {
     message: '',
     rating: 0
   });
-  const { user, logout } = useAuth();
+  
+  const { user, logout, loading } = useAuth(); // loading add किया
   const pathname = usePathname();
 
-  // Handle scroll effect
+  // Handle scroll effect - CLIENT SIDE ONLY
   useEffect(() => {
+    // Check if running on client side
+    if (typeof window === 'undefined') return;
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Handle WhatsApp click
+  const handleWhatsAppClick = () => {
+    if (typeof window === 'undefined') return;
+    const phoneNumber = '919876543210';
+    const message = 'Hi! I need help with Creative Jobs';
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   // Handle feedback submission
   const handleFeedbackSubmit = async (e) => {
@@ -50,11 +64,11 @@ export default function Navbar() {
     }
   };
 
-  // Navigation links
+  // Navigation links - UPDATED
   const mainLinks = [
     { href: '/', label: 'Home', icon: <Home className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/jobs', label: 'Jobs', icon: <Briefcase className="h-4 w-4 md:h-5 md:w-5" /> },
-    { href: '/career advice', label: 'Career Advice', icon: <Building className="h-4 w-4 md:h-5 md:w-5" /> },
+    { href: '/career-advice', label: 'Career Advice', icon: <Lightbulb className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/teachers', label: 'Teachers', icon: <Users className="h-4 w-4 md:h-5 md:w-5" /> },
   ];
 
@@ -63,6 +77,30 @@ export default function Navbar() {
     { href: '/blog', label: 'Blog', icon: <Globe className="h-5 w-5" /> },
     { href: '/help', label: 'Help', icon: <HelpCircle className="h-5 w-5" /> },
   ];
+
+  // If loading, show minimal navbar
+  if (loading) {
+    return (
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-14 md:h-16">
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg">
+                <Briefcase className="h-5 w-5 md:h-6 md:w-6 text-white" />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-lg md:text-xl font-bold text-gray-900">Creative Jobs</span>
+                <span className="text-[10px] text-gray-500 hidden md:block">Teaching Jobs</span>
+              </div>
+            </Link>
+            <div className="flex items-center space-x-2">
+              <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>
@@ -104,10 +142,14 @@ export default function Navbar() {
             </div>
 
             {/* Desktop User Actions */}
-            <div className="hidden lg:flex items-center space-x-4">
-              {/* Search Button */}
-              <button className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-                <Search className="h-4 w-4" />
+            <div className="hidden lg:flex items-center space-x-3">
+              {/* WhatsApp Button */}
+              <button
+                onClick={handleWhatsAppClick}
+                className="flex items-center space-x-1.5 px-3 py-1.5 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm shadow-sm hover:shadow"
+              >
+                <MessageCircle className="h-4 w-4" />
+                <span>WhatsApp</span>
               </button>
 
               {/* Feedback Button */}
@@ -117,6 +159,14 @@ export default function Navbar() {
               >
                 <MessageSquare className="h-4 w-4" />
                 <span className="text-sm">Feedback</span>
+              </button>
+
+              {/* Search Button */}
+              <button 
+                onClick={() => alert('Search feature coming soon!')}
+                className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <Search className="h-4 w-4" />
               </button>
 
               {/* User Actions */}
@@ -181,13 +231,17 @@ export default function Navbar() {
 
             {/* Mobile menu button */}
             <div className="flex lg:hidden items-center space-x-2">
-              {!user && (
+              {!user ? (
                 <Link
                   href="/login"
                   className="px-3 py-1.5 text-sm text-blue-600 font-medium"
                 >
                   Login
                 </Link>
+              ) : (
+                <div className="h-8 w-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-blue-600" />
+                </div>
               )}
               
               <button
@@ -275,20 +329,34 @@ export default function Navbar() {
             {/* Scrollable Content */}
             <div className="h-[calc(100%-160px)] overflow-y-auto pb-4">
               <div className="p-4">
-                {/* Feedback Button */}
-                <div className="mb-4">
+                {/* WhatsApp & Feedback Buttons */}
+                <div className="grid grid-cols-2 gap-2 mb-6">
+                  <button
+                    onClick={() => {
+                      handleWhatsAppClick();
+                      setIsMenuOpen(false);
+                    }}
+                    className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-all duration-200 group"
+                  >
+                    <div className="flex flex-col items-center space-y-1">
+                      <div className="p-1.5 bg-green-500 rounded group-hover:scale-110 transition-transform">
+                        <MessageCircle className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="text-xs font-medium text-gray-700">WhatsApp</span>
+                    </div>
+                  </button>
                   <button
                     onClick={() => {
                       setShowFeedback(true);
                       setIsMenuOpen(false);
                     }}
-                    className="w-full p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all duration-200 group"
+                    className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all duration-200 group"
                   >
-                    <div className="flex items-center space-x-2">
+                    <div className="flex flex-col items-center space-y-1">
                       <div className="p-1.5 bg-blue-500 rounded group-hover:scale-110 transition-transform">
                         <MessageSquare className="h-4 w-4 text-white" />
                       </div>
-                      <span className="text-sm font-medium text-gray-700">Give Feedback</span>
+                      <span className="text-xs font-medium text-gray-700">Feedback</span>
                     </div>
                   </button>
                 </div>
@@ -390,7 +458,7 @@ export default function Navbar() {
                     </div>
                     <div className="flex items-center space-x-1.5 text-xs text-gray-600">
                       <Mail className="h-3 w-3" />
-                      <span>help@edujobs.com</span>
+                      <span>help@creativejobs.com</span>
                     </div>
                   </div>
                 </div>
