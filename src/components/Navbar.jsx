@@ -7,8 +7,9 @@ import { usePathname } from 'next/navigation';
 import { 
   Menu, X, Briefcase, User, Search, Home, 
   Building, MessageSquare, LogOut, ChevronDown,
-  Users, LayoutDashboard, Phone, Mail, HelpCircle,
-  FileText, Star, Globe, BookOpen, Lightbulb, MessageCircle
+  Users, LayoutDashboard, FileText, Globe, BookOpen, 
+  Lightbulb, MessageCircle, Bell, Settings, UserPlus,
+  GraduationCap, Award
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -20,16 +21,17 @@ export default function Navbar() {
     rating: 0
   });
   
-  const { user, logout, loading } = useAuth(); // loading add किया
+  const { user, logout, loading } = useAuth();
   const pathname = usePathname();
 
-  // Handle scroll effect - CLIENT SIDE ONLY
+  // Handle scroll effect - FIXED
   useEffect(() => {
-    // Check if running on client side
-    if (typeof window === 'undefined') return;
-    
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -38,7 +40,6 @@ export default function Navbar() {
 
   // Handle WhatsApp click
   const handleWhatsAppClick = () => {
-    if (typeof window === 'undefined') return;
     const phoneNumber = '919876543210';
     const message = 'Hi! I need help with Creative Jobs';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
@@ -64,38 +65,37 @@ export default function Navbar() {
     }
   };
 
-  // Navigation links - UPDATED
+  // SAME LINKS FOR BOTH DESKTOP & MOBILE
   const mainLinks = [
     { href: '/', label: 'Home', icon: <Home className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/jobs', label: 'Jobs', icon: <Briefcase className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/career-advice', label: 'Career Advice', icon: <Lightbulb className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/teachers', label: 'Teachers', icon: <Users className="h-4 w-4 md:h-5 md:w-5" /> },
+    { href: '/institutes', label: 'Institutes', icon: <Building className="h-4 w-4 md:h-5 md:w-5" /> },
   ];
 
-  const mobileExtraLinks = [
-    { href: '/resources', label: 'Resources', icon: <BookOpen className="h-5 w-5" /> },
-    { href: '/blog', label: 'Blog', icon: <Globe className="h-5 w-5" /> },
-    { href: '/help', label: 'Help', icon: <HelpCircle className="h-5 w-5" /> },
-  ];
+  // User dashboard links
+  const userDashboardLinks = user ? [
+    { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
+    { href: '/profile', label: 'Profile', icon: <User className="h-4 w-4" /> },
+    { href: '/applications', label: 'Applications', icon: <FileText className="h-4 w-4" /> },
+    { href: '/notifications', label: 'Notifications', icon: <Bell className="h-4 w-4" /> },
+    { href: '/settings', label: 'Settings', icon: <Settings className="h-4 w-4" /> },
+  ] : [];
 
   // If loading, show minimal navbar
   if (loading) {
     return (
-      <nav className="sticky top-0 z-50 bg-white border-b border-gray-100">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-14 md:h-16">
+          <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center space-x-2">
               <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg">
-                <Briefcase className="h-5 w-5 md:h-6 md:w-6 text-white" />
+                <Briefcase className="h-5 w-5 text-white" />
               </div>
-              <div className="flex flex-col">
-                <span className="text-lg md:text-xl font-bold text-gray-900">Creative Jobs</span>
-                <span className="text-[10px] text-gray-500 hidden md:block">Teaching Jobs</span>
-              </div>
+              <span className="text-lg font-bold text-gray-900">Creative Jobs</span>
             </Link>
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
-            </div>
+            <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
           </div>
         </div>
       </nav>
@@ -104,162 +104,170 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Main Navbar */}
-      <nav className={`sticky top-0 z-50 transition-all duration-200 ${
+      {/* Main Navbar - FIXED POSITION */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100' 
+          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
           : 'bg-white border-b border-gray-100'
       }`}>
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-14 md:h-16">
-            {/* Logo */}
-            <Link href="/" className="flex items-center space-x-2 group">
-              <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg group-hover:scale-105 transition-transform duration-300">
-                <Briefcase className="h-5 w-5 md:h-6 md:w-6 text-white" />
+          <div className="flex items-center justify-between h-16">
+            
+            {/* Logo - Left Side */}
+            <div className="flex items-center space-x-8">
+              <Link href="/" className="flex items-center space-x-2 group">
+                <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg group-hover:scale-105 transition-transform">
+                  <Briefcase className="h-5 w-5 text-white" />
+                </div>
+                <span className="text-xl font-bold text-gray-900">Creative Jobs</span>
+              </Link>
+              
+              {/* Desktop Navigation - SAME LINKS */}
+              <div className="hidden md:flex items-center space-x-1">
+                {mainLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      pathname === link.href
+                        ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600'
+                        : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                    }`}
+                  >
+                    {link.icon}
+                    <span>{link.label}</span>
+                  </Link>
+                ))}
               </div>
-              <div className="flex flex-col">
-                <span className="text-lg md:text-xl font-bold text-gray-900">Creative Jobs</span>
-                <span className="text-[10px] text-gray-500 hidden md:block">Teaching Jobs</span>
-              </div>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-0.5">
-              {mainLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 ${
-                    pathname === link.href
-                      ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600 font-medium'
-                      : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                  }`}
-                >
-                  {link.icon}
-                  <span className="text-sm">{link.label}</span>
-                </Link>
-              ))}
             </div>
 
-            {/* Desktop User Actions */}
-            <div className="hidden lg:flex items-center space-x-3">
-              {/* WhatsApp Button */}
-              <button
-                onClick={handleWhatsAppClick}
-                className="flex items-center space-x-1.5 px-3 py-1.5 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-sm shadow-sm hover:shadow"
-              >
-                <MessageCircle className="h-4 w-4" />
-                <span>WhatsApp</span>
-              </button>
+            {/* Right Side Actions - SAME FOR BOTH */}
+            <div className="flex items-center space-x-3">
+              
+              {/* Action Buttons */}
+              <div className="hidden md:flex items-center space-x-2">
+                <button
+                  onClick={handleWhatsAppClick}
+                  className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 text-sm font-medium"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span>WhatsApp</span>
+                </button>
+                
+                <button
+                  onClick={() => setShowFeedback(true)}
+                  className="flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-medium"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Feedback</span>
+                </button>
+              </div>
 
-              {/* Feedback Button */}
-              <button
-                onClick={() => setShowFeedback(true)}
-                className="flex items-center space-x-1.5 px-3 py-1.5 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
-              >
-                <MessageSquare className="h-4 w-4" />
-                <span className="text-sm">Feedback</span>
-              </button>
-
-              {/* Search Button */}
-              <button 
-                onClick={() => alert('Search feature coming soon!')}
-                className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-              >
-                <Search className="h-4 w-4" />
-              </button>
-
-              {/* User Actions */}
+              {/* User Menu */}
               {user ? (
                 <div className="relative group">
-                  <button className="flex items-center space-x-2 p-1 rounded-lg hover:bg-gray-50">
+                  <button className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-50">
                     <div className="h-8 w-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
                       <User className="h-4 w-4 text-blue-600" />
                     </div>
-                    <div className="text-left max-w-[120px]">
-                      <p className="text-xs font-medium text-gray-900 truncate">
-                        {user.displayName || 'User'}
+                    <div className="text-left hidden md:block">
+                      <p className="text-sm font-medium text-gray-900">
+                        {user.displayName?.split(' ')[0] || 'User'}
                       </p>
-                      <p className="text-[10px] text-gray-500">Dashboard</p>
+                      <p className="text-xs text-gray-500">View Profile</p>
                     </div>
-                    <ChevronDown className="h-3 w-3 text-gray-500 ml-1" />
+                    <ChevronDown className="h-4 w-4 text-gray-500 hidden md:block" />
                   </button>
                   
-                  {/* Dropdown Menu */}
-                  <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                    >
-                      <LayoutDashboard className="h-3 w-3" />
-                      <span>Dashboard</span>
-                    </Link>
-                    <Link
-                      href="/profile"
-                      className="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                    >
-                      <User className="h-3 w-3" />
-                      <span>Profile</span>
-                    </Link>
-                    <div className="border-t border-gray-100 my-1"></div>
+                  {/* Dropdown Menu - SAME LINKS AS MOBILE */}
+                  <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    {/* Quick Actions */}
+                    <div className="px-4 py-2">
+                      <p className="text-xs font-medium text-gray-500 mb-1">Signed in as</p>
+                      <p className="text-sm font-semibold text-gray-900 truncate">
+                        {user.email}
+                      </p>
+                    </div>
+                    <div className="border-t border-gray-100 my-2"></div>
+                    
+                    {/* Dashboard Links */}
+                    {userDashboardLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="flex items-center space-x-3 px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                      >
+                        {link.icon}
+                        <span className="text-sm font-medium">{link.label}</span>
+                      </Link>
+                    ))}
+                    
+                    <div className="border-t border-gray-100 my-2"></div>
+                    
+                    {/* Action Buttons in Dropdown */}
+                    <div className="px-4 py-2 space-y-2">
+                      <button
+                        onClick={handleWhatsAppClick}
+                        className="flex items-center justify-center space-x-2 w-full px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 text-sm font-medium"
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                        <span>WhatsApp Help</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => setShowFeedback(true)}
+                        className="flex items-center justify-center space-x-2 w-full px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                        <span>Give Feedback</span>
+                      </button>
+                    </div>
+                    
+                    <div className="border-t border-gray-100 my-2"></div>
+                    
                     <button
                       onClick={logout}
-                      className="flex items-center space-x-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50 w-full transition-colors"
+                      className="flex items-center space-x-3 px-4 py-2.5 text-red-600 hover:bg-red-50 w-full transition-colors"
                     >
-                      <LogOut className="h-3 w-3" />
-                      <span>Logout</span>
+                      <LogOut className="h-4 w-4" />
+                      <span className="text-sm font-medium">Logout</span>
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-3">
                   <Link
                     href="/login"
-                    className="px-3 py-1.5 text-sm text-gray-600 hover:text-blue-600 font-medium transition-colors"
+                    className="hidden md:block px-4 py-2 text-gray-600 hover:text-blue-600 font-medium"
                   >
                     Login
                   </Link>
                   <Link
                     href="/signup"
-                    className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow transition-all duration-200"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow"
                   >
                     Sign Up
                   </Link>
                 </div>
               )}
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="flex lg:hidden items-center space-x-2">
-              {!user ? (
-                <Link
-                  href="/login"
-                  className="px-3 py-1.5 text-sm text-blue-600 font-medium"
-                >
-                  Login
-                </Link>
-              ) : (
-                <div className="h-8 w-8 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-blue-600" />
-                </div>
-              )}
               
+              {/* Mobile Menu Button */}
               <button
-                className="p-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all duration-200"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
               >
                 {isMenuOpen ? (
-                  <X className="h-5 w-5 text-blue-600" />
+                  <X className="h-5 w-5" />
                 ) : (
-                  <Menu className="h-5 w-5 text-blue-600" />
+                  <Menu className="h-5 w-5" />
                 )}
               </button>
             </div>
           </div>
         </div>
 
-        {/* Modern Mobile Sidebar */}
-        <div className={`lg:hidden fixed inset-0 z-50 transition-all duration-300 ${
+        {/* Mobile Sidebar - SAME CONTENT AS DESKTOP */}
+        <div className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${
           isMenuOpen ? 'visible' : 'invisible'
         }`}>
           {/* Overlay */}
@@ -271,31 +279,30 @@ export default function Navbar() {
           />
           
           {/* Sidebar */}
-          <div className={`absolute right-0 top-0 h-full w-72 bg-white shadow-xl transform transition-transform duration-300 ${
+          <div className={`absolute right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ${
             isMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}>
+            
             {/* Sidebar Header */}
-            <div className="p-5 border-b border-gray-100">
-              <div className="flex items-center justify-between mb-5">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2">
                   <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg">
                     <Briefcase className="h-5 w-5 text-white" />
                   </div>
-                  <div>
-                    <span className="text-lg font-bold text-gray-900">Creative Jobs</span>
-                  </div>
+                  <span className="text-lg font-bold text-gray-900">Creative Jobs</span>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}
-                  className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-1.5 hover:bg-gray-100 rounded-lg"
                 >
-                  <X className="h-4 w-4 text-gray-600" />
+                  <X className="h-5 w-5 text-gray-600" />
                 </button>
               </div>
 
-              {/* User Info */}
+              {/* User Info / Login */}
               {user ? (
-                <div className="flex items-center space-x-2 p-2.5 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                   <div className="h-10 w-10 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center">
                     <User className="h-5 w-5 text-blue-600" />
                   </div>
@@ -307,18 +314,18 @@ export default function Navbar() {
                   </div>
                 </div>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <Link
                     href="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 px-3 py-2 text-center border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-center font-medium"
                   >
                     Login
                   </Link>
                   <Link
                     href="/signup"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 px-3 py-2 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-sm font-medium"
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-center font-medium"
                   >
                     Sign Up
                   </Link>
@@ -327,42 +334,11 @@ export default function Navbar() {
             </div>
 
             {/* Scrollable Content */}
-            <div className="h-[calc(100%-160px)] overflow-y-auto pb-4">
+            <div className="h-[calc(100%-160px)] overflow-y-auto">
               <div className="p-4">
-                {/* WhatsApp & Feedback Buttons */}
-                <div className="grid grid-cols-2 gap-2 mb-6">
-                  <button
-                    onClick={() => {
-                      handleWhatsAppClick();
-                      setIsMenuOpen(false);
-                    }}
-                    className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-lg hover:from-green-100 hover:to-emerald-100 transition-all duration-200 group"
-                  >
-                    <div className="flex flex-col items-center space-y-1">
-                      <div className="p-1.5 bg-green-500 rounded group-hover:scale-110 transition-transform">
-                        <MessageCircle className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-700">WhatsApp</span>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowFeedback(true);
-                      setIsMenuOpen(false);
-                    }}
-                    className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-all duration-200 group"
-                  >
-                    <div className="flex flex-col items-center space-y-1">
-                      <div className="p-1.5 bg-blue-500 rounded group-hover:scale-110 transition-transform">
-                        <MessageSquare className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="text-xs font-medium text-gray-700">Feedback</span>
-                    </div>
-                  </button>
-                </div>
-
-                {/* Main Links */}
-                <div className="space-y-0.5 mb-6">
+                
+                {/* Main Navigation Links - SAME AS DESKTOP */}
+                <div className="space-y-1 mb-6">
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
                     Navigation
                   </h3>
@@ -371,13 +347,13 @@ export default function Navbar() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setIsMenuOpen(false)}
-                      className={`flex items-center space-x-2 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                      className={`flex items-center space-x-3 px-3 py-3 rounded-lg ${
                         pathname === link.href
                           ? 'bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-600 font-medium'
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
-                      <div className={`p-1.5 rounded ${
+                      <div className={`p-2 rounded ${
                         pathname === link.href ? 'bg-blue-100' : 'bg-gray-100'
                       }`}>
                         {link.icon}
@@ -387,92 +363,100 @@ export default function Navbar() {
                   ))}
                 </div>
 
-                {/* Extra Links */}
-                <div className="space-y-0.5 mb-6">
+                {/* Action Buttons - SAME AS DESKTOP */}
+                <div className="mb-6">
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
-                    More
+                    Quick Actions
                   </h3>
-                  {mobileExtraLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center space-x-2 px-3 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                    >
-                      <div className="p-1.5 bg-gray-100 rounded">
-                        {link.icon}
-                      </div>
-                      <span className="text-sm font-medium">{link.label}</span>
-                    </Link>
-                  ))}
-                </div>
-
-                {/* Dashboard Links (if logged in) */}
-                {user && (
-                  <div className="space-y-0.5 mb-6">
-                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
-                      Account
-                    </h3>
-                    <Link
-                      href="/dashboard"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center space-x-2 px-3 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                    >
-                      <div className="p-1.5 bg-blue-100 rounded">
-                        <LayoutDashboard className="h-4 w-4 text-blue-600" />
-                      </div>
-                      <span className="text-sm font-medium">Dashboard</span>
-                    </Link>
-                    <Link
-                      href="/profile"
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center space-x-2 px-3 py-2.5 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                    >
-                      <div className="p-1.5 bg-purple-100 rounded">
-                        <User className="h-4 w-4 text-purple-600" />
-                      </div>
-                      <span className="text-sm font-medium">Profile</span>
-                    </Link>
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => {
-                        logout();
+                        handleWhatsAppClick();
                         setIsMenuOpen(false);
                       }}
-                      className="flex items-center space-x-2 px-3 py-2.5 text-red-600 hover:bg-red-50 w-full rounded-lg transition-colors"
+                      className="flex flex-col items-center p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-lg hover:from-green-100 hover:to-emerald-100"
                     >
-                      <div className="p-1.5 bg-red-100 rounded">
-                        <LogOut className="h-4 w-4" />
-                      </div>
-                      <span className="text-sm font-medium">Logout</span>
+                      <MessageCircle className="h-5 w-5 text-green-600 mb-1" />
+                      <span className="text-xs font-medium text-gray-700">WhatsApp</span>
                     </button>
+                    
+                    <button
+                      onClick={() => {
+                        setShowFeedback(true);
+                        setIsMenuOpen(false);
+                      }}
+                      className="flex flex-col items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg hover:from-blue-100 hover:to-indigo-100"
+                    >
+                      <MessageSquare className="h-5 w-5 text-blue-600 mb-1" />
+                      <span className="text-xs font-medium text-gray-700">Feedback</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* User Dashboard Links - SAME AS DESKTOP DROPDOWN */}
+                {user && (
+                  <div className="mb-6">
+                    <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
+                      My Account
+                    </h3>
+                    <div className="space-y-1">
+                      {userDashboardLinks.map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center space-x-3 px-3 py-3 text-gray-700 hover:bg-gray-50 rounded-lg"
+                        >
+                          <div className="p-2 bg-gray-100 rounded">
+                            {link.icon}
+                          </div>
+                          <span className="text-sm font-medium">{link.label}</span>
+                        </Link>
+                      ))}
+                      
+                      <button
+                        onClick={() => {
+                          logout();
+                          setIsMenuOpen(false);
+                        }}
+                        className="flex items-center space-x-3 px-3 py-3 text-red-600 hover:bg-red-50 w-full rounded-lg"
+                      >
+                        <div className="p-2 bg-red-100 rounded">
+                          <LogOut className="h-4 w-4" />
+                        </div>
+                        <span className="text-sm font-medium">Logout</span>
+                      </button>
+                    </div>
                   </div>
                 )}
 
-                {/* Contact Info */}
-                <div className="p-3 mt-6 bg-gray-50 rounded-lg border border-gray-100">
-                  <h4 className="text-xs font-semibold text-gray-700 mb-2">Contact Us</h4>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center space-x-1.5 text-xs text-gray-600">
-                      <Phone className="h-3 w-3" />
-                      <span>+91 98765 43210</span>
-                    </div>
-                    <div className="flex items-center space-x-1.5 text-xs text-gray-600">
-                      <Mail className="h-3 w-3" />
-                      <span>help@creativejobs.com</span>
-                    </div>
+                {/* For Non-Users - Sign Up CTA */}
+                {!user && (
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 mb-6">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Join Creative Jobs</h3>
+                    <p className="text-xs text-gray-600 mb-3">
+                      Create account to apply for jobs and track applications
+                    </p>
+                    <Link
+                      href="/signup"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-sm font-medium"
+                    >
+                      Create Free Account
+                    </Link>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Feedback Modal */}
+      {/* Feedback Modal - SAME FOR BOTH */}
       {showFeedback && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[100] p-4">
-          <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-5">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-xl max-w-md w-full">
+            <div className="p-6">
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">Share Feedback</h3>
@@ -490,7 +474,7 @@ export default function Navbar() {
                 {/* Rating Stars */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Rating
+                    How would you rate us?
                   </label>
                   <div className="flex space-x-1">
                     {[1, 2, 3, 4, 5].map((star) => (
@@ -500,13 +484,13 @@ export default function Navbar() {
                         onClick={() => setFeedback({...feedback, rating: star})}
                         className="p-1 hover:scale-110 transition-transform"
                       >
-                        <Star
-                          className={`h-7 w-7 ${
-                            star <= feedback.rating
-                              ? 'fill-yellow-400 text-yellow-400'
-                              : 'text-gray-300'
-                          }`}
-                        />
+                        <div className={`h-7 w-7 rounded-full flex items-center justify-center ${
+                          star <= feedback.rating
+                            ? 'bg-yellow-100 text-yellow-600'
+                            : 'bg-gray-100 text-gray-400'
+                        }`}>
+                          {star}
+                        </div>
                       </button>
                     ))}
                   </div>
@@ -520,26 +504,26 @@ export default function Navbar() {
                   <textarea
                     value={feedback.message}
                     onChange={(e) => setFeedback({...feedback, message: e.target.value})}
-                    placeholder="Share your thoughts or suggestions..."
+                    placeholder="What can we improve? What do you like?"
                     className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent h-28"
                     required
                   />
                 </div>
 
                 {/* Submit Buttons */}
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-3">
                   <button
                     type="button"
                     onClick={() => setShowFeedback(false)}
-                    className="flex-1 px-3 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-3 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 text-sm font-medium"
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium"
                   >
-                    Submit
+                    Submit Feedback
                   </button>
                 </div>
               </form>
@@ -547,6 +531,9 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Add padding to main content to prevent navbar overlap */}
+      <div className="pt-16"></div>
     </>
   );
 }
