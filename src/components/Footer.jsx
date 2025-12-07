@@ -143,7 +143,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 {[
                   { href: '/jobs', label: 'Find Jobs', icon: <Briefcase className="h-4 w-4" /> },
-                  { href: '/institutes', label: 'For Institutes', icon: <Building className="h-4 w-4" /> },
+                 
                   { href: '/teachers', label: 'Teachers Directory', icon: <Users className="h-4 w-4" /> },
                   { href: '/career-advice', label: 'Career Advice', icon: <Star className="h-4 w-4" /> },
                   { href: '/about', label: 'About Us', icon: <Globe className="h-4 w-4" /> },

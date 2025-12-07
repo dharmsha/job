@@ -71,7 +71,7 @@ export default function Navbar() {
     { href: '/jobs', label: 'Jobs', icon: <Briefcase className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/career-advice', label: 'Career Advice', icon: <Lightbulb className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/teachers', label: 'Teachers', icon: <Users className="h-4 w-4 md:h-5 md:w-5" /> },
-    { href: '/institutes', label: 'Institutes', icon: <Building className="h-4 w-4 md:h-5 md:w-5" /> },
+   
   ];
 
   // User dashboard links
