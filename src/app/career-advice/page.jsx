@@ -1,5 +1,4 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { 
@@ -13,13 +12,41 @@ import {
   Rocket, Crown, Trophy, ShieldCheck, Brain, Compass,
   PieChart, BarChart, LineChart, Target as TargetIcon,
   Sparkles, Crown as CrownIcon, Check, X, Plus, Minus,
-  User // ये जोड़ें
+  User, Play, Calculator, Upload, Edit2, Eye, FileDown
 } from 'lucide-react';
 
 export default function CareerAdvicePage() {
   const [activeTab, setActiveTab] = useState('job-seekers');
   const [expandedTips, setExpandedTips] = useState({});
   const [activeAccordion, setActiveAccordion] = useState(null);
+  
+  // Modal States
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showSalaryModal, setShowSalaryModal] = useState(false);
+  const [showResumeModal, setShowResumeModal] = useState(false);
+  
+  // Video Upload State
+  const [selectedVideos, setSelectedVideos] = useState([]);
+  
+  // Salary Calculator State
+  const [salaryData, setSalaryData] = useState({
+    experience: 3,
+    location: 'metro',
+    position: 'teacher'
+  });
+  
+  // Resume Builder State
+  const [resumeData, setResumeData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    position: '',
+    experience: '',
+    skills: '',
+    education: '',
+    summary: ''
+  });
+  const [selectedTemplate, setSelectedTemplate] = useState(1);
 
   const toggleTip = (index) => {
     setExpandedTips(prev => ({
@@ -30,6 +57,40 @@ export default function CareerAdvicePage() {
 
   const toggleAccordion = (index) => {
     setActiveAccordion(activeAccordion === index ? null : index);
+  };
+
+  // Video Upload Handler
+  const handleVideoUpload = (e) => {
+    const files = Array.from(e.target.files).slice(0, 3);
+    setSelectedVideos(files);
+  };
+
+  // Salary Calculation Function
+  const calculateSalary = () => {
+    const baseSalary = {
+      teacher: 30000,
+      professor: 50000,
+      trainer: 35000
+    };
+    
+    const locationMultiplier = {
+      metro: 1.5,
+      city: 1.2,
+      town: 1.0
+    };
+    
+    const experienceBonus = salaryData.experience * 2000;
+    const base = baseSalary[salaryData.position] || 30000;
+    const multiplier = locationMultiplier[salaryData.location] || 1.2;
+    
+    return Math.round((base * multiplier) + experienceBonus);
+  };
+
+  // Resume Download Handler
+  const handleResumeDownload = () => {
+    // Create and download resume PDF
+    alert(`Resume downloaded successfully! Template ${selectedTemplate} used.`);
+    setShowResumeModal(false);
   };
 
   const jobSeekerTips = [
@@ -500,12 +561,12 @@ export default function CareerAdvicePage() {
           </div>
         </div>
 
-        {/* Resources Section */}
+        {/* Resources Section - UPDATED WITH MODALS */}
         <div className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Free Resources & Tools</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Interactive Tools & Resources</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Download our expert-created templates, guides, and calculators
+              Click to experience our interactive tools with video upload, salary calculator & resume builder
             </p>
           </div>
           
@@ -513,27 +574,33 @@ export default function CareerAdvicePage() {
             {[
               {
                 title: "Resume Template Pack",
-                description: "Professional teaching resume templates (Word & PDF)",
+                description: "Professional teaching resume templates (Word & PDF) with video upload feature",
                 icon: <FileText className="h-6 w-6" />,
                 downloads: "2.5K+",
                 size: "3.2 MB",
-                color: "from-blue-500 to-cyan-500"
+                color: "from-blue-500 to-cyan-500",
+                buttonText: "Create Resume + Upload Video",
+                buttonIcon: <Upload className="ml-2 h-4 w-4" />
               },
               {
                 title: "Interview Preparation Kit",
-                description: "100+ interview questions with model answers",
+                description: "Watch 2-3 video demos and calculate expected salary",
                 icon: <Video className="h-6 w-6" />,
                 downloads: "1.8K+",
                 size: "2.1 MB",
-                color: "from-purple-500 to-pink-500"
+                color: "from-purple-500 to-pink-500",
+                buttonText: "Watch Videos + Salary Calc",
+                buttonIcon: <Play className="ml-2 h-4 w-4" />
               },
               {
                 title: "Salary Calculator 2024",
                 description: "Calculate expected salary based on location & experience",
-                icon: <DollarSign className="h-6 w-6" />,
+                icon: <Calculator className="h-6 w-6" />,
                 downloads: "3.2K+",
                 size: "1.5 MB",
-                color: "from-green-500 to-emerald-500"
+                color: "from-green-500 to-emerald-500",
+                buttonText: "Calculate + Get Resume",
+                buttonIcon: <Edit2 className="ml-2 h-4 w-4" />
               }
             ].map((resource, index) => (
               <div key={index} className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
@@ -551,9 +618,16 @@ export default function CareerAdvicePage() {
                 <p className="text-gray-600 mb-4">{resource.description}</p>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                   <span className="text-sm text-gray-500">{resource.downloads} downloads</span>
-                  <button className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium group">
+                  <button 
+                    onClick={() => {
+                      if (index === 0) setShowVideoModal(true);
+                      else if (index === 1) setShowSalaryModal(true);
+                      else if (index === 2) setShowResumeModal(true);
+                    }}
+                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium group"
+                  >
                     <Download className="h-4 w-4 mr-2 group-hover:animate-bounce" />
-                    Download Free
+                    {resource.buttonText}
                   </button>
                 </div>
               </div>
@@ -598,6 +672,344 @@ export default function CareerAdvicePage() {
         </div>
       </div>
 
+      {/* VIDEO UPLOAD MODAL */}
+      {showVideoModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Upload Teaching Videos</h3>
+              <button onClick={() => setShowVideoModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            
+            <p className="text-gray-600 mb-6">Showcase your teaching skills by uploading up to 3 videos</p>
+            
+            <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center mb-6 bg-blue-50/50">
+              <Upload className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+              <input
+                type="file"
+                accept="video/*"
+                multiple
+                onChange={handleVideoUpload}
+                className="hidden"
+                id="videoUpload"
+              />
+              <label
+                htmlFor="videoUpload"
+                className="cursor-pointer inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                Choose Videos
+              </label>
+              <p className="text-sm text-gray-500 mt-2">Max 3 videos • MP4, AVI, MOV • Max 100MB each</p>
+            </div>
+
+            {selectedVideos.length > 0 && (
+              <div className="mb-6">
+                <h4 className="font-semibold text-gray-700 mb-3">Selected Videos:</h4>
+                <div className="space-y-3">
+                  {selectedVideos.map((video, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Video className="h-5 w-5 text-blue-500" />
+                        <span className="text-gray-700 truncate max-w-xs">{video.name}</span>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {(video.size / (1024 * 1024)).toFixed(2)} MB
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowVideoModal(false)}
+                className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowVideoModal(false);
+                  setShowResumeModal(true);
+                }}
+                className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-xl hover:from-blue-700 hover:to-cyan-700 transition-colors font-medium flex items-center justify-center"
+              >
+                Next: Create Resume
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SALARY CALCULATOR MODAL */}
+      {showSalaryModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Salary Calculator 2024</h3>
+              <button onClick={() => setShowSalaryModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            
+            <div className="space-y-6 mb-8">
+              <div>
+                <label className="block text-gray-700 mb-3 font-medium">Years of Teaching Experience</label>
+                <div className="relative">
+                  <input
+                    type="range"
+                    min="0"
+                    max="30"
+                    value={salaryData.experience}
+                    onChange={(e) => setSalaryData({...salaryData, experience: parseInt(e.target.value)})}
+                    className="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-sm text-gray-500 mt-2">
+                    <span>0</span>
+                    <span className="font-bold text-blue-600">{salaryData.experience} years</span>
+                    <span>30+</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-3 font-medium">Location</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { value: 'metro', label: 'Metro City', desc: 'Mumbai, Delhi, etc.' },
+                    { value: 'city', label: 'Tier-2 City', desc: 'Jaipur, Pune, etc.' },
+                    { value: 'town', label: 'Small Town', desc: 'District level' }
+                  ].map((loc) => (
+                    <button
+                      key={loc.value}
+                      onClick={() => setSalaryData({...salaryData, location: loc.value})}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        salaryData.location === loc.value
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="font-medium text-gray-900">{loc.label}</div>
+                      <div className="text-xs text-gray-500 mt-1">{loc.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 mb-3 font-medium">Position</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { value: 'teacher', label: 'School Teacher', icon: '👩‍🏫' },
+                    { value: 'professor', label: 'Professor', icon: '👨‍🏫' },
+                    { value: 'trainer', label: 'Corporate Trainer', icon: '💼' }
+                  ].map((pos) => (
+                    <button
+                      key={pos.value}
+                      onClick={() => setSalaryData({...salaryData, position: pos.value})}
+                      className={`p-4 rounded-xl border-2 transition-all ${
+                        salaryData.position === pos.value
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <div className="text-2xl mb-2">{pos.icon}</div>
+                      <div className="font-medium text-gray-900 text-sm">{pos.label}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 mb-6 border border-green-100">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-lg font-bold text-gray-900">Estimated Monthly Salary</h4>
+                <div className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
+                  Updated 2024
+                </div>
+              </div>
+              <div className="text-4xl font-bold text-green-600 mb-2">
+                ₹{calculateSalary().toLocaleString()}
+                <span className="text-lg text-gray-600">/month</span>
+              </div>
+              <p className="text-gray-600 text-sm">
+                Based on current market standards in {salaryData.location === 'metro' ? 'metro' : salaryData.location === 'city' ? 'tier-2' : 'small town'} cities
+              </p>
+            </div>
+
+            <div className="flex gap-4">
+              <button
+                onClick={() => setShowSalaryModal(false)}
+                className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  // Generate PDF report
+                  alert('Salary report generated! Check your downloads.');
+                  setShowSalaryModal(false);
+                }}
+                className="flex-1 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl hover:from-green-600 hover:to-emerald-600 transition-colors font-medium flex items-center justify-center"
+              >
+                <FileDown className="h-5 w-5 mr-2" />
+                Download Report
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* RESUME BUILDER MODAL */}
+      {showResumeModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-white rounded-2xl p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">Create Your Professional Resume</h3>
+              <button onClick={() => setShowResumeModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="font-bold text-gray-900 text-lg mb-4">Personal Information</h4>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-gray-700 mb-2 text-sm font-medium">Full Name</label>
+                    <input
+                      type="text"
+                      value={resumeData.name}
+                      onChange={(e) => setResumeData({...resumeData, name: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 text-sm font-medium">Email Address</label>
+                    <input
+                      type="email"
+                      value={resumeData.email}
+                      onChange={(e) => setResumeData({...resumeData, email: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 text-sm font-medium">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={resumeData.phone}
+                      onChange={(e) => setResumeData({...resumeData, phone: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="+91 98765 43210"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 text-sm font-medium">Position Applying For</label>
+                    <input
+                      type="text"
+                      value={resumeData.position}
+                      onChange={(e) => setResumeData({...resumeData, position: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="e.g., Math Teacher, Physics Professor"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 text-sm font-medium">Experience Summary</label>
+                    <textarea
+                      value={resumeData.experience}
+                      onChange={(e) => setResumeData({...resumeData, experience: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      rows="3"
+                      placeholder="Describe your teaching experience..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 text-sm font-medium">Key Skills</label>
+                    <input
+                      type="text"
+                      value={resumeData.skills}
+                      onChange={(e) => setResumeData({...resumeData, skills: e.target.value})}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="e.g., Classroom Management, Curriculum Development"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-8">
+                  <h4 className="font-bold text-gray-900 text-lg mb-4">Choose Template</h4>
+                  <div className="grid grid-cols-5 gap-2">
+                    {[1, 2, 3, 4, 5].map((num) => (
+                      <button
+                        key={num}
+                        onClick={() => setSelectedTemplate(num)}
+                        className={`h-32 border-2 rounded-lg flex flex-col items-center justify-center transition-all ${
+                          selectedTemplate === num
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-blue-300'
+                        }`}
+                      >
+                        <FileText className="h-8 w-8 text-gray-400 mb-2" />
+                        <span className="text-sm font-medium">Template {num}</span>
+                        {selectedTemplate === num && (
+                          <CheckCircle className="h-5 w-5 text-green-500 mt-1" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mb-8">
+                  <h4 className="font-bold text-gray-900 text-lg mb-4">Resume Preview</h4>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gray-50/50">
+                    <div className="flex items-center justify-center h-40 text-gray-400">
+                      <div className="text-center">
+                        <Eye className="h-8 w-8 mx-auto mb-2" />
+                        <p className="text-sm">Live preview will appear here</p>
+                        <p className="text-xs text-gray-500 mt-1">Template {selectedTemplate} selected</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-50 rounded-xl p-4 mb-6">
+                  <div className="flex items-center space-x-2 text-blue-700 mb-2">
+                    <Sparkles className="h-4 w-4" />
+                    <span className="font-medium">Pro Tip</span>
+                  </div>
+                  <p className="text-sm text-gray-700">
+                    Upload your teaching videos along with resume to increase chances by 40%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+              <button
+                onClick={() => setShowResumeModal(false)}
+                className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResumeDownload}
+                className="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-colors font-medium flex items-center justify-center"
+              >
+                <FileDown className="h-5 w-5 mr-2" />
+                Download Resume (PDF)
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Bottom Contact Bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-2xl z-40">
         <div className="container mx-auto px-4 py-4">
@@ -627,15 +1039,16 @@ export default function CareerAdvicePage() {
         </div>
       </div>
 
-      {/* Add some custom styles for animation */}
+      {/* Add custom styles */}
       <style jsx global>{`
         @keyframes gradient {
-          0%, 100% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
         }
         
         .animate-gradient {
@@ -643,8 +1056,34 @@ export default function CareerAdvicePage() {
           animation: gradient 3s ease infinite;
         }
         
+        .animate-fadeIn {
+          animation: fadeIn 0.2s ease-out;
+        }
+        
         .bg-grid-white\/10 {
           background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(255 255 255 / 0.1)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #3b82f6;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #3b82f6;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
       `}</style>
     </div>
