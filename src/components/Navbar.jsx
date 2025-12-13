@@ -78,9 +78,7 @@ export default function Navbar() {
   const userDashboardLinks = user ? [
     { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
     { href: '/profile', label: 'Profile', icon: <User className="h-4 w-4" /> },
-    { href: '/applications', label: 'Applications', icon: <FileText className="h-4 w-4" /> },
-    { href: '/notifications', label: 'Notifications', icon: <Bell className="h-4 w-4" /> },
-    { href: '/settings', label: 'Settings', icon: <Settings className="h-4 w-4" /> },
+
   ] : [];
 
   // If loading, show minimal navbar

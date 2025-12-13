@@ -8,12 +8,12 @@ import {
   GoogleAuthProvider,
   createUserWithEmailAndPassword 
 } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { 
   Eye, EyeOff, Mail, Lock, User, School, 
   UserPlus, CheckCircle, XCircle, Loader2,
-  Key
+  Key, CreditCard, ShieldCheck
 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -27,9 +27,16 @@ export default function LoginPage() {
   const [userType, setUserType] = useState('candidate');
   const [fullName, setFullName] = useState('');
   const [showDirectFirebase, setShowDirectFirebase] = useState(false);
+  const [paymentRequired, setPaymentRequired] = useState(true); // Default true
   
   const router = useRouter();
   const provider = new GoogleAuthProvider();
+
+  // Check payment requirement on component mount
+  useState(() => {
+    // You can set this via environment variable
+    setPaymentRequired(process.env.NEXT_PUBLIC_IS_PAYMENT_REQUIRED === 'true');
+  });
 
   // 📝 Handle Login with better error handling
   const handleLogin = async (e) => {
@@ -43,14 +50,29 @@ export default function LoginPage() {
       const user = userCredential.user;
       console.log('Login successful:', user.email);
       
-      // Check if user exists in Firestore
-      setTimeout(() => {
+      // Check user payment status in Firestore
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      const userData = userDoc.exists() ? userDoc.data() : null;
+      
+      // Check if payment is required for this user
+      const needsPayment = paymentRequired && 
+                          (!userData?.hasPaid || userData?.paymentStatus !== 'active');
+      
+      console.log('Payment required:', paymentRequired);
+      console.log('User has paid:', userData?.hasPaid);
+      console.log('Needs payment:', needsPayment);
+      
+      if (needsPayment) {
+        // Redirect to payment page
+        router.push(`/payment?userType=${userType}&userId=${user.uid}&email=${encodeURIComponent(user.email)}`);
+      } else {
+        // Redirect to dashboard
         if (userType === 'candidate') {
           router.push('/candidates/dashboard');
         } else {
           router.push('/institutes/dashboard');
         }
-      }, 1000);
+      }
       
     } catch (error) {
       console.error('Login error code:', error.code);
@@ -101,7 +123,10 @@ export default function LoginPage() {
         userType: userType,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-        profileComplete: false
+        profileComplete: false,
+        hasPaid: !paymentRequired, // If payment is not required, mark as paid
+        paymentStatus: paymentRequired ? 'pending' : 'free_tier',
+        paymentPlan: paymentRequired ? 'none' : 'free'
       };
       
       // Save to users collection
@@ -114,7 +139,8 @@ export default function LoginPage() {
           ...userData,
           resumeUploaded: false,
           totalApplications: 0,
-          profilePicture: null
+          profilePicture: null,
+          subscriptionActive: !paymentRequired
         });
       } else {
         await setDoc(doc(db, 'institutes', user.uid), {
@@ -122,20 +148,29 @@ export default function LoginPage() {
           instituteName: fullName.trim(),
           jobsPosted: 0,
           verified: false,
-          location: ''
+          location: '',
+          subscriptionActive: !paymentRequired
         });
       }
       
-      setSuccess(`🎉 Account created successfully! Logging you in...`);
+      setSuccess(`🎉 Account created successfully!`);
       
-      // Auto login after signup
+      // Check if payment is required
       setTimeout(() => {
-        if (userType === 'candidate') {
-          router.push('/candidates/dashboard');
+        if (paymentRequired) {
+          setSuccess(`🎉 Account created! Redirecting to payment...`);
+          // Redirect to payment page
+          router.push(`/payment?userType=${userType}&userId=${user.uid}&email=${encodeURIComponent(user.email)}&newUser=true`);
         } else {
-          router.push('/institutes/dashboard');
+          setSuccess(`🎉 Account created! Redirecting to dashboard...`);
+          // Auto login after signup and redirect to dashboard
+          if (userType === 'candidate') {
+            router.push('/candidates/dashboard');
+          } else {
+            router.push('/institutes/dashboard');
+          }
         }
-      }, 2000);
+      }, 1500);
       
     } catch (error) {
       console.error('Signup error:', error.code, error.message);
@@ -164,17 +199,63 @@ export default function LoginPage() {
       const user = result.user;
       
       // Check if user exists in Firestore
-      const userDoc = doc(db, 'users', user.uid);
-      await setDoc(userDoc, {
-        uid: user.uid,
-        email: user.email,
-        fullName: user.displayName || user.email?.split('@')[0],
-        userType: userType,
-        photoURL: user.photoURL,
-        createdAt: new Date().toISOString()
-      }, { merge: true });
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
       
-      router.push(userType === 'candidate' ? '/candidates/dashboard' : '/institutes/dashboard');
+      if (userDoc.exists()) {
+        // Existing user - check payment status
+        const userData = userDoc.data();
+        const needsPayment = paymentRequired && 
+                            (!userData?.hasPaid || userData?.paymentStatus !== 'active');
+        
+        if (needsPayment) {
+          router.push(`/payment?userType=${userType}&userId=${user.uid}&email=${encodeURIComponent(user.email)}`);
+        } else {
+          router.push(userType === 'candidate' ? '/candidates/dashboard' : '/institutes/dashboard');
+        }
+      } else {
+        // New user - create document
+        const userData = {
+          uid: user.uid,
+          email: user.email,
+          fullName: user.displayName || user.email?.split('@')[0],
+          userType: userType,
+          photoURL: user.photoURL,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          hasPaid: !paymentRequired,
+          paymentStatus: paymentRequired ? 'pending' : 'free_tier',
+          paymentPlan: paymentRequired ? 'none' : 'free'
+        };
+        
+        await setDoc(doc(db, 'users', user.uid), userData, { merge: true });
+        
+        // Create user type specific document
+        if (userType === 'candidate') {
+          await setDoc(doc(db, 'candidates', user.uid), {
+            ...userData,
+            resumeUploaded: false,
+            totalApplications: 0,
+            profilePicture: null,
+            subscriptionActive: !paymentRequired
+          });
+        } else {
+          await setDoc(doc(db, 'institutes', user.uid), {
+            ...userData,
+            instituteName: user.displayName || user.email?.split('@')[0],
+            jobsPosted: 0,
+            verified: false,
+            location: '',
+            subscriptionActive: !paymentRequired
+          });
+        }
+        
+        // Redirect based on payment requirement
+        if (paymentRequired) {
+          router.push(`/payment?userType=${userType}&userId=${user.uid}&email=${encodeURIComponent(user.email)}&newUser=true`);
+        } else {
+          router.push(userType === 'candidate' ? '/candidates/dashboard' : '/institutes/dashboard');
+        }
+      }
       
     } catch (error) {
       console.error('Google auth error:', error);
@@ -228,6 +309,18 @@ export default function LoginPage() {
     }
   };
 
+  // Handle Payment Skip for Testing
+  const handleSkipPaymentForTesting = () => {
+    // This is for testing only - disable payment requirement
+    setPaymentRequired(false);
+    setSuccess('Payment requirement disabled for testing. You can now login/signup without payment.');
+    
+    // Clear after 5 seconds
+    setTimeout(() => {
+      setSuccess('');
+    }, 5000);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <div className="w-full max-w-md">
@@ -240,6 +333,14 @@ export default function LoginPage() {
           <p className="text-gray-600 mt-2">
             {isSignup ? 'Start your journey' : 'Access your dashboard'}
           </p>
+          
+          {/* Payment Notice */}
+          {paymentRequired && (
+            <div className="mt-4 inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+              <CreditCard className="h-4 w-4 mr-2" />
+              Payment required after signup
+            </div>
+          )}
         </div>
 
         {/* User Type Selector */}
@@ -319,6 +420,40 @@ export default function LoginPage() {
               Sign Up
             </button>
           </div>
+
+          {/* Payment Info Banner */}
+          {isSignup && paymentRequired && (
+            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+              <div className="flex items-center mb-2">
+                <ShieldCheck className="h-5 w-5 text-blue-600 mr-2" />
+                <h3 className="font-medium text-blue-800">Payment Information</h3>
+              </div>
+              <div className="text-sm text-blue-700 space-y-1">
+                <p className="flex items-center">
+                  <span className="inline-block w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                  <strong>{userType === 'candidate' ? 'Job Seekers:' : 'Institutes:'}</strong>
+                </p>
+                {userType === 'candidate' ? (
+                  <ul className="ml-4 list-disc pl-4">
+                    <li>One-time payment: ₹50</li>
+                    <li>Unlimited job applications</li>
+                    <li>Resume upload & profile</li>
+                    <li>Priority support</li>
+                  </ul>
+                ) : (
+                  <ul className="ml-4 list-disc pl-4">
+                    <li>Basic Plan: ₹200 (10 job posts)</li>
+                    <li>Premium Plan: ₹500 (unlimited)</li>
+                    <li>Access to candidate database</li>
+                    <li>Analytics dashboard</li>
+                  </ul>
+                )}
+                <p className="text-xs text-blue-600 mt-2">
+                  Secure payment via Razorpay. Test cards available.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Form */}
           <form onSubmit={isSignup ? handleSignup : handleLogin} className="space-y-6">
@@ -463,6 +598,16 @@ export default function LoginPage() {
                 Use Institute Test Credentials
               </button>
               
+              {/* Test Payment Feature */}
+              {paymentRequired && (
+                <button
+                  onClick={handleSkipPaymentForTesting}
+                  className="w-full text-sm py-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200"
+                >
+                  Disable Payment for Testing
+                </button>
+              )}
+              
               <button
                 onClick={() => setShowDirectFirebase(!showDirectFirebase)}
                 className="w-full text-sm py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
@@ -494,6 +639,21 @@ app.auth().createUserWithEmailAndPassword("test@gmail.com", "test123456")
                 </pre>
               </div>
             )}
+            
+            {/* Payment Test Info */}
+            {paymentRequired && (
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-xs font-medium text-green-800 mb-1">
+                  Test Payment Information:
+                </p>
+                <div className="text-xs text-green-700 space-y-1">
+                  <p><strong>Card Number:</strong> 4111 1111 1111 1111</p>
+                  <p><strong>Expiry:</strong> Any future date</p>
+                  <p><strong>CVV:</strong> Any 3 digits</p>
+                  <p><strong>UPI:</strong> Any UPI ID</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -504,6 +664,10 @@ app.auth().createUserWithEmailAndPassword("test@gmail.com", "test123456")
             <a href="#" className="text-blue-600 hover:underline">Terms</a> and{' '}
             <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
           </p>
+          <div className="mt-2 flex items-center justify-center">
+            <ShieldCheck className="h-4 w-4 text-gray-400 mr-1" />
+            <span>Secure authentication powered by Firebase</span>
+          </div>
         </div>
       </div>
     </div>
