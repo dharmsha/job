@@ -205,7 +205,7 @@ const Footer = () => {
                   <div>
                     <p className="text-sm text-gray-400">Call Us</p>
                     <a 
-                      href="tel:+919876543210" 
+                      href="tel:+917079948109" 
                       className="text-white font-medium hover:text-blue-300 transition-colors"
                     >
                       +91 7079948109
@@ -220,7 +220,7 @@ const Footer = () => {
                   <div>
                     <p className="text-sm text-gray-400">Email Us</p>
                     <a 
-                      href="mailto:support@creativejobs.com" 
+                      href="mailto:Classdoorweb@gmail.com" 
                       className="text-white font-medium hover:text-blue-300 transition-colors"
                     >
                       Classdoorweb@gmail.com

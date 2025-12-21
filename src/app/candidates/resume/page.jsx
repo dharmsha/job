@@ -336,7 +336,7 @@ export default function ResumeUploadPage() {
                     value={formData.phone}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="+91 9876543210"
+                    placeholder="+91 7404980061"
                     required
                   />
                 </div>

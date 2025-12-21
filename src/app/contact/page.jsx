@@ -72,14 +72,14 @@ export default function ContactPage() {
   };
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = '919876543210';
-    const message = `Hi Creative Jobs Team! I need help with: ${formData.subject || 'General Inquiry'}`;
+    const phoneNumber = '917404980061';
+    const message = `Hi ClassDoor Jobs Team! I need help with: ${formData.subject || 'General Inquiry'}`;
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleCallClick = () => {
-    window.open('tel:+919876543210', '_self');
+    window.open('tel:+917079948109', '_self');
   };
 
   const categories = [
@@ -141,10 +141,10 @@ export default function ContactPage() {
     {
       title: "Email",
       description: "For detailed queries",
-      details: "support@creativejobs.com",
+      details: "Classdoorweb@gmail.com",
       icon: <Mail className="h-6 w-6" />,
       color: "from-purple-500 to-pink-500",
-      action: () => window.open('mailto:support@creativejobs.com'),
+      action: () => window.open('mailto:Classdoorweb@gmail.com'),
       note: "Response within 4 hours"
     },
     {
@@ -352,7 +352,7 @@ export default function ContactPage() {
                               value={formData.phone}
                               onChange={handleChange}
                               className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                              placeholder="+91 98765 43210"
+                              placeholder="+91 7404980061"
                             />
                             <Phone className="absolute right-3 top-3 h-5 w-5 text-gray-400" />
                           </div>
@@ -724,7 +724,7 @@ export default function ContactPage() {
                 className="px-8 py-3 bg-transparent border-2 border-white text-white font-bold rounded-full hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
               >
                 <PhoneCall className="h-5 w-5 mr-2" />
-                Call +91 98765 43210
+                Call +917079948109
               </button>
             </div>
             <p className="text-blue-200 text-sm mt-6">
