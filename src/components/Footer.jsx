@@ -342,7 +342,7 @@ const Footer = () => {
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 Made with <Heart className="h-3 w-3 inline mx-1 text-red-500 animate-pulse" /> 
-                for educators in India
+                 CreatorsMind
               </p>
             </div>
             
@@ -418,22 +418,7 @@ const Footer = () => {
           </a>
           
           {/* Alternative Contact Buttons (Mobile) */}
-          <div className="flex space-x-2 mt-2 md:hidden">
-            <a
-              href="tel:+917079948109"
-              className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
-              aria-label="Call us"
-            >
-              <PhoneCall className="h-4 w-4" />
-            </a>
-            <a
-              href="mailto:Classdoorweb@gmail.com"
-              className="flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors"
-              aria-label="Email us"
-            >
-              <Mail className="h-4 w-4" />
-            </a>
-          </div>
+         
         </div>
       </div>
 
