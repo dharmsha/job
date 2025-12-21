@@ -149,7 +149,7 @@ export default function SignupPage() {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                placeholder={userType === 'candidate' ? 'John Doe' : 'ABC Public School'}
+                placeholder={userType === 'candidate' ? 'Dharm' : 'ABC Public School'}
                 required
               />
             </div>

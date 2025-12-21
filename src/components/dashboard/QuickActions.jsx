@@ -95,14 +95,14 @@ export default function QuickActions({
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
             <div>
-              <p className="font-medium">John Doe</p>
+              <p className="font-medium">Name</p>
               <p className="text-sm text-gray-600">Software Engineer</p>
             </div>
             <span className="text-sm text-gray-500">Today, 3 PM</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
             <div>
-              <p className="font-medium">Jane Smith</p>
+              <p className="font-medium">Rahul</p>
               <p className="text-sm text-gray-600">Math Teacher</p>
             </div>
             <span className="text-sm text-gray-500">Tomorrow, 11 AM</span>
