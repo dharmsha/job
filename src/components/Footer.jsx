@@ -420,14 +420,14 @@ const Footer = () => {
           {/* Alternative Contact Buttons (Mobile) */}
           <div className="flex space-x-2 mt-2 md:hidden">
             <a
-              href="tel:+919876543210"
+              href="tel:+917079948109"
               className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
               aria-label="Call us"
             >
               <PhoneCall className="h-4 w-4" />
             </a>
             <a
-              href="mailto:support@creativejobs.com"
+              href="mailto:Classdoorweb@gmail.com"
               className="flex items-center justify-center w-10 h-10 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 transition-colors"
               aria-label="Email us"
             >
