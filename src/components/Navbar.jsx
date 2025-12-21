@@ -40,8 +40,8 @@ export default function Navbar() {
 
   // Handle WhatsApp click
   const handleWhatsAppClick = () => {
-    const phoneNumber = '919876543210';
-    const message = 'Hi! I need help with Creative Jobs';
+    const phoneNumber = '917079948109';
+    const message = 'Hi! I need help with ClassDoor Jobs';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -117,7 +117,7 @@ export default function Navbar() {
                 <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg group-hover:scale-105 transition-transform">
                   <Briefcase className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold text-gray-900">Creative Jobs</span>
+                <span className="text-xl font-bold text-gray-900">ClassDoor</span>
               </Link>
               
               {/* Desktop Navigation - SAME LINKS */}
@@ -288,7 +288,7 @@ export default function Navbar() {
                   <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg">
                     <Briefcase className="h-5 w-5 text-white" />
                   </div>
-                  <span className="text-lg font-bold text-gray-900">Creative Jobs</span>
+                  <span className="text-lg font-bold text-gray-900">ClassDoor Jobs</span>
                 </div>
                 <button
                   onClick={() => setIsMenuOpen(false)}

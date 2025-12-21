@@ -208,7 +208,7 @@ const Footer = () => {
                       href="tel:+919876543210" 
                       className="text-white font-medium hover:text-blue-300 transition-colors"
                     >
-                      +91 98765 43210
+                      +91 7079948109
                     </a>
                   </div>
                 </div>
@@ -223,7 +223,7 @@ const Footer = () => {
                       href="mailto:support@creativejobs.com" 
                       className="text-white font-medium hover:text-blue-300 transition-colors"
                     >
-                      support@creativejobs.com
+                      Classdoorweb@gmail.com
                     </a>
                   </div>
                 </div>
@@ -338,7 +338,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-center md:text-left mb-4 md:mb-0">
               <p className="text-gray-400 text-sm">
-                © {currentYear} <span className="text-white font-medium">Creative Jobs</span>. All rights reserved.
+                © {currentYear} <span className="text-white font-medium">ClassDoor Jobs</span>. All rights reserved.
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 Made with <Heart className="h-3 w-3 inline mx-1 text-red-500 animate-pulse" /> 
@@ -396,7 +396,7 @@ const Footer = () => {
           
           {/* WhatsApp Button */}
           <a
-            href="https://wa.me/919876543210"
+            href="https://wa.me/917079948109"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center justify-center w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-green-500 to-emerald-600 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110 hover:rotate-12 group"

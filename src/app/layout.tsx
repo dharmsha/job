@@ -9,8 +9,8 @@ import { Toaster } from 'react-hot-toast';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'JobPortal - Find Your Dream Job',
-  description: 'Job portal connecting institutes with job seekers',
+  title: 'ClassDoor - Find Your Dream Job',
+  description: 'ClassDoor connecting institutes with job seekers',
 };
 
 // 👉 FIX: Define props type so TS error goes away
