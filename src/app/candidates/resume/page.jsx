@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db, storage } from '@/lib/firebase';
+import { auth, db, storage } from '@/src/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
@@ -216,7 +216,7 @@ export default function ResumeUploadPage() {
       
     } catch (error) {
       console.error('Error uploading resume:', error);
-      alert('❌ Error uploading resume. Please try again.');
+      alert(' Error uploading resume. Please try again.');
     } finally {
       setUploading(false);
     }

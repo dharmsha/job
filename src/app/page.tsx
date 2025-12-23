@@ -1,6 +1,6 @@
 // app/page.js
-import Hero from '@/components/Hero';
-import FeaturedJobs from '@/components/FeaturedJobs';
+import Hero from '@/src/components/Hero';
+import FeaturedJobs from '@/src/components/FeaturedJobs';
 
 
 export default function Home() {

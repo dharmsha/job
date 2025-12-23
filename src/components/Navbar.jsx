@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/src/context/AuthContext';
 import { usePathname } from 'next/navigation';
 import { 
   Menu, X, Briefcase, User, Search, Home, 

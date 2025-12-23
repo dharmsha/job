@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db } from '@/lib/firebase';
+import { auth, db } from '@/src/lib/firebase';
 import { 
   collection, 
   getDocs, 
@@ -17,8 +17,8 @@ import {
   Home, Plus, Building, Users, DollarSign, Clock, TrendingUp,
   BookOpen, Award, Zap, Star, ExternalLink
 } from 'lucide-react';
-import JobCard from '@/components/JobCard';
-import JobFilters from '@/components/jobs/JobFilters';
+import JobCard from '@/src/components/JobCard';
+import JobFilters from '@/src/components/jobs/JobFilters';
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);

@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/src/context/AuthContext';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { db } from '@/src/lib/firebase';
+import LoadingSpinner from '@/src/components/common/LoadingSpinner';
 import { 
   Briefcase, Users, Calendar, CheckCircle, Clock, Star, 
   MapPin, DollarSign, Home, LogOut, FileText, Eye, 

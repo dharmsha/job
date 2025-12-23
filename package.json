@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate-icons": "pwa-asset-generator ./public/logo.png ./public -i ./public/manifest.json -m ./public/manifest.json --favicon --opaque false --icon-only --favicon-ico true --path-override '/'",
+    "fix-ts": "rm -rf .next && npm install --save-dev @types/node @types/react @types/react-dom @types/minimatch",
+    "clean-install": "rm -rf node_modules package-lock.json && npm install",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "crypto": "^1.0.1",
@@ -15,20 +19,28 @@
     "firebase-admin": "^13.6.0",
     "lucide-react": "^0.555.0",
     "next": "^16.0.7",
+    "next-pwa": "^5.6.0",
     "razorpay": "^2.9.6",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "react-hot-toast": "^2.6.0"
+    "react-hot-toast": "^2.6.0",
+    "canvas": "^3.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/minimatch": "^6.0.0",
+    "@types/node": "^20.19.27",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/crypto-js": "^4.2.2",
+    "@types/razorpay": "^2.0.10",
     "eslint": "^9",
     "eslint-config-next": "16.0.6",
+    "pwa-asset-generator": "^8.1.2",
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5"
+    "typescript": "^5",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47"
   }
 }

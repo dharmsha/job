@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { Upload, File, X, CheckCircle } from 'lucide-react';
-import { storage } from '@/lib/firebase';
+import { storage } from '@/src/lib/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const ResumeUpload = ({ userId }) => {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import JobCard from '../JobCard';
-import { db } from '@/lib/firebase';
+import { db } from '@/src/lib/firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { Briefcase } from 'lucide-react';
 
