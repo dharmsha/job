@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { auth, db } from '@/src/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { 
   doc, 
   getDoc,
@@ -334,7 +334,7 @@ export default function DynamicProfilePage() {
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center"
               >
                 <Printer className="h-4 w-4 mr-2" />
-                Prints
+                Print
               </button>
               <button
                 onClick={() => router.push(userType === 'candidate' ? '/candidates/dashboard' : '/institutes/dashboard')}

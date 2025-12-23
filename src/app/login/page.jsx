@@ -9,7 +9,7 @@ import {
   createUserWithEmailAndPassword 
 } from 'firebase/auth';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '@/src/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { 
   Eye, EyeOff, Mail, Lock, User, School, 
   UserPlus, CheckCircle, XCircle, Loader2,

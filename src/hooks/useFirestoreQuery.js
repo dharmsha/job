@@ -7,7 +7,7 @@ import {
   orderBy, 
   getDocs 
 } from 'firebase/firestore';
-import { db } from '@/src/lib/firebase';
+import { db } from '@/lib/firebase';
 
 export const useFirestoreQuery = (collectionName, conditions = [], sortConfig = null) => {
   const [data, setData] = useState([]);
