@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { db } from '@/lib/firebase';
+import { db } from '@/src/lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export default function JobApplications() {

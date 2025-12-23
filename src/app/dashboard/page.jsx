@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/src/context/AuthContext';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/src/lib/firebase';
 import LoadingSpinner from '@/src/components/common/LoadingSpinner';
 import { 
   Briefcase, Users, Calendar, CheckCircle, Clock, Star, 
