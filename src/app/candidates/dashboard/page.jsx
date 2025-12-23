@@ -223,7 +223,7 @@ export default function CandidateDashboard() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
               >
                 <Briefcase className="h-4 w-4 mr-2" />
-                Browse Jobs
+                Browse Job
               </button>
               
               <button 
