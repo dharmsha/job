@@ -1,4 +1,4 @@
-import { adminAuth } from '@/lib/firebase-admin';
+import { adminAuth } from '@/src/lib/firebase-admin';
 
 export async function POST(request) {
   try {
