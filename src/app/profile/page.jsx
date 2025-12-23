@@ -334,7 +334,7 @@ export default function DynamicProfilePage() {
                 className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center"
               >
                 <Printer className="h-4 w-4 mr-2" />
-                Print
+                Prints
               </button>
               <button
                 onClick={() => router.push(userType === 'candidate' ? '/candidates/dashboard' : '/institutes/dashboard')}
