@@ -1,74 +1,57 @@
-export const loadRazorpay = () => {
-  return new Promise((resolve) => {
-    if (typeof window === 'undefined') {
-      resolve(false);
-      return;
-    }
-    
-    if (window.Razorpay) {
-      resolve(true);
-      return;
-    }
-    
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = () => resolve(true);
-    script.onerror = () => resolve(false);
-    document.body.appendChild(script);
-  });
-};
+import crypto from 'crypto';
 
-export const createRazorpayOrder = async (amount, userType = 'candidate') => {
+export async function POST(request) {
   try {
-    const response = await fetch('/api/create-razorpay-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount, userType })
-    });
-    return await response.json();
-  } catch (error) {
-    console.error('Error creating order (mock):', error);
-    return {
+    const body = await request.json();
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      userId,
+      userType,
+      planId,
+      amount
+    } = body;
+
+    // Verify signature
+    const bodyText = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expectedSignature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+      .update(bodyText)
+      .digest('hex');
+
+    const isSignatureValid = expectedSignature === razorpay_signature;
+
+    if (!isSignatureValid) {
+      return Response.json({
+        success: false,
+        error: 'Invalid payment signature'
+      }, { status: 400 });
+    }
+
+    // You can also verify with Razorpay API
+    // const razorpay = new Razorpay({
+    //   key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    //   key_secret: process.env.RAZORPAY_KEY_SECRET
+    // });
+    // const payment = await razorpay.payments.fetch(razorpay_payment_id);
+
+    return Response.json({
       success: true,
-      order: {
-        id: `mock_order_${Date.now()}`,
-        amount: amount * 100,
-        currency: 'INR'
-      }
-    };
-  }
-};
-
-export const verifyPayment = async (paymentId, orderId, signature) => {
-  try {
-    const response = await fetch('/api/verify-payment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paymentId, orderId, signature })
+      message: 'Payment verified successfully',
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+      userId,
+      userType,
+      planId,
+      amount
     });
-    return await response.json();
+
   } catch (error) {
-    console.error('Error verifying payment (mock):', error);
-    return { success: true, message: 'Payment verified (mock fallback)' };
+    console.error('Payment verification error:', error);
+    return Response.json({
+      success: false,
+      error: error.message || 'Payment verification failed'
+    }, { status: 500 });
   }
-};
-
-export const initiatePayment = (options) => {
-  return new Promise((resolve) => {
-    if (typeof window === 'undefined' || !window.Razorpay) {
-      resolve({ success: false, error: 'Razorpay not available' });
-      return;
-    }
-    
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-    
-    rzp.on('payment.success', (response) => {
-      resolve({ success: true, response });
-    });
-    
-    rzp.on('payment.error', (error) => {
-      resolve({ success: false, error });
-    });
-  });
-};
+}

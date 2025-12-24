@@ -1,43 +1,50 @@
-import { NextResponse } from 'next/server';
+import Razorpay from 'razorpay';
+
+const razorpay = new Razorpay({
+  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET
+});
 
 export async function POST(request) {
   try {
-    const { amount, currency = 'INR', userType } = await request.json();
+    const { amount, currency = 'INR', userType, planId, userId } = await request.json();
 
-    let finalAmount = amount;
-    if (!amount) {
-      finalAmount = userType === 'institute' ? 20000 : 5000; // in paise
+    if (!amount || !userType || !userId) {
+      return Response.json({
+        success: false,
+        error: 'Missing required fields'
+      }, { status: 400 });
     }
 
-    // Mock order
-    const order = {
-      id: `mock_order_${Date.now()}`,
-      amount: finalAmount,
+    // Create Razorpay order
+    const options = {
+      amount: amount, // Already in paise
       currency: currency,
-      receipt: `receipt_${Date.now()}`,
-      status: 'created'
+      receipt: `receipt_${userId}_${Date.now()}`,
+      notes: {
+        userId: userId,
+        userType: userType,
+        planId: planId
+      }
     };
 
-    return NextResponse.json({
+    const order = await razorpay.orders.create(options);
+
+    return Response.json({
       success: true,
       order: {
         id: order.id,
         amount: order.amount,
         currency: order.currency,
         receipt: order.receipt
-      },
-      note: 'Mock order - for testing only'
+      }
     });
 
   } catch (error) {
-    console.error('Error creating mock order:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to create mock order',
-        details: error.message 
-      },
-      { status: 500 }
-    );
+    console.error('Razorpay order creation error:', error);
+    return Response.json({
+      success: false,
+      error: error.message || 'Failed to create order'
+    }, { status: 500 });
   }
 }
