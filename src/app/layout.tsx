@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/src/components/Navbar';
 import Footer from '@/src/components/Footer';
@@ -7,7 +6,8 @@ import { AuthProvider } from '@/src/context/AuthContext';
 import { Toaster } from 'react-hot-toast';
 import PWAInstallPrompt from '@/src/components/PWAInstallPrompt';
 
-const inter = Inter({ subsets: ['latin'] });
+// 👇 Font ko temporary disable karo (Google Font error fix)
+// const inter = Inter({ subsets: ['latin'] });
 
 // 👇 Base URL define करें
 const BASE_URL = 'https://www.classdoor.in';
@@ -194,6 +194,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en-IN" prefix="og: https://ogp.me/ns#">
       <head>
+        {/* 👇 Font ko manually add karo (Google Font error fix) */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+        <style>{`
+          body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          }
+        `}</style>
+        
         {/* 👇 Structured Data Scripts */}
         <script
           type="application/ld+json"
@@ -283,7 +294,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
       </head>
       
-      <body className={inter.className}>
+      <body>
         <AuthProvider>
           <div className="flex flex-col min-h-screen">
             <Navbar />
