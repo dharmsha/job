@@ -294,7 +294,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
       </head>
       
-      <body>
+      <body suppressHydrationWarning={true}>
         <AuthProvider>
           <div className="flex flex-col min-h-screen">
             <Navbar />

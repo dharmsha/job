@@ -4,15 +4,15 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 
-// Your Firebase configuration
+// Firebase configuration from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyC3BfKa2IDbBYiCWpiwUw7me_G0a5VOT_s",
-  authDomain: "attendence-tracker-90940.firebaseapp.com",
-  projectId: "attendence-tracker-90940",
-  storageBucket: "attendence-tracker-90940.firebasestorage.app",
-  messagingSenderId: "575531776559",
-  appId: "1:575531776559:web:fb14ef4839e1a79fa564da",
-  measurementId: "G-BDEPT9DS5C"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 // Initialize Firebase only on client side and only once
