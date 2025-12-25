@@ -1,54 +1,40 @@
-// app/api/razorpay/check-payment/route.js
-import Razorpay from 'razorpay';
+// app/api/check-payment/route.js
 import { NextResponse } from 'next/server';
-
-const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+import Razorpay from 'razorpay';
 
 export async function POST(request) {
   try {
-    const { paymentId, orderId } = await request.json();
-
-    if (!paymentId) {
+    // ✅ IMPORTANT: Use proper variable names
+    const key_id = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const key_secret = process.env.RAZORPAY_KEY_SECRET;
+    
+    console.log('Checking env vars:', { 
+      hasKeyId: !!key_id, 
+      hasKeySecret: !!key_secret 
+    });
+    
+    if (!key_id || !key_secret) {
       return NextResponse.json(
-        { success: false, error: 'Payment ID is required' },
-        { status: 400 }
+        { 
+          error: 'Razorpay keys not configured',
+          key_id_missing: !key_id,
+          key_secret_missing: !key_secret
+        },
+        { status: 500 }
       );
     }
 
-    // Fetch payment details from Razorpay
-    const payment = await razorpay.payments.fetch(paymentId);
-    
-    console.log('Payment Status:', payment.status);
-
-    return NextResponse.json({
-      success: true,
-      payment: {
-        id: payment.id,
-        amount: payment.amount / 100, // Convert paise to rupees
-        currency: payment.currency,
-        status: payment.status,
-        method: payment.method,
-        bank: payment.bank,
-        card_id: payment.card_id,
-        email: payment.email,
-        contact: payment.contact,
-        created_at: payment.created_at,
-        order_id: payment.order_id
-      }
+    const razorpay = new Razorpay({
+      key_id: key_id,
+      key_secret: key_secret,
     });
 
+    // Rest of your code...
+    
   } catch (error) {
-    console.error('Payment fetch error:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to fetch payment details',
-        code: error.error?.code 
-      },
-      { status: 500 }
-    );
+    console.error('Check payment error:', error);
+    return NextResponse.json({ 
+      error: error.message 
+    }, { status: 500 });
   }
 }
