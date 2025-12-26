@@ -5,11 +5,10 @@ import Link from 'next/link';
 import { useAuth } from '@/src/context/AuthContext';
 import { usePathname } from 'next/navigation';
 import { 
-  Menu, X, Briefcase, User, Search, Home, 
-  Building, MessageSquare, LogOut, ChevronDown,
-  Users, LayoutDashboard, FileText, Globe, BookOpen, 
-  Lightbulb, MessageCircle, Bell, Settings, UserPlus,
-  GraduationCap, Award
+  Menu, X, Briefcase, User, Home, 
+  MessageSquare, LogOut, ChevronDown,
+  Users, LayoutDashboard, Lightbulb, 
+  MessageCircle
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -24,29 +23,33 @@ export default function Navbar() {
   const { user, logout, loading } = useAuth();
   const pathname = usePathname();
 
-  // Handle scroll effect - FIXED
+  // SIMPLIFIED SCROLL HANDLER - FIXED
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 10);
     };
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle WhatsApp click
+  // WhatsApp click handler - AS YOU WANTED
   const handleWhatsAppClick = () => {
     const phoneNumber = '917079948109';
     const message = 'Hi! I need help with ClassDoor Jobs';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    
+    // Try to open in a new tab by creating an anchor and clicking it
+    const a = document.createElement('a');
+    a.href = whatsappUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
-  // Handle feedback submission
+  // Feedback submission
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
     if (!feedback.message.trim()) {
@@ -65,33 +68,31 @@ export default function Navbar() {
     }
   };
 
-  // SAME LINKS FOR BOTH DESKTOP & MOBILE
+  // Main links
   const mainLinks = [
     { href: '/', label: 'Home', icon: <Home className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/jobs', label: 'Jobs', icon: <Briefcase className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/career-advice', label: 'Career Advice', icon: <Lightbulb className="h-4 w-4 md:h-5 md:w-5" /> },
     { href: '/teachers', label: 'Teachers', icon: <Users className="h-4 w-4 md:h-5 md:w-5" /> },
-   
   ];
 
   // User dashboard links
   const userDashboardLinks = user ? [
     { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
     { href: '/profile', label: 'Profile', icon: <User className="h-4 w-4" /> },
-
   ] : [];
 
-  // If loading, show minimal navbar
+  // Loading state
   if (loading) {
     return (
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 h-16">
+        <div className="container mx-auto px-4 h-full">
+          <div className="flex items-center justify-between h-full">
             <Link href="/" className="flex items-center space-x-2">
               <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg">
                 <Briefcase className="h-5 w-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-gray-900">Creative Jobs</span>
+              <span className="text-lg font-bold text-gray-900">ClassDoor</span>
             </Link>
             <div className="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
           </div>
@@ -102,16 +103,16 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Main Navbar - FIXED POSITION */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      {/* Main Navbar - SIMPLIFIED FIX */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-16 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
+          ? 'bg-white shadow-lg border-b border-gray-200' 
           : 'bg-white border-b border-gray-100'
       }`}>
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+        <div className="container mx-auto px-4 h-full">
+          <div className="flex items-center justify-between h-full">
             
-            {/* Logo - Left Side */}
+            {/* Logo */}
             <div className="flex items-center space-x-8">
               <Link href="/" className="flex items-center space-x-2 group">
                 <div className="p-1.5 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg group-hover:scale-105 transition-transform">
@@ -120,7 +121,7 @@ export default function Navbar() {
                 <span className="text-xl font-bold text-gray-900">ClassDoor</span>
               </Link>
               
-              {/* Desktop Navigation - SAME LINKS */}
+              {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-1">
                 {mainLinks.map((link) => (
                   <Link
@@ -139,10 +140,10 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Right Side Actions - SAME FOR BOTH */}
+            {/* Right Side Actions */}
             <div className="flex items-center space-x-3">
               
-              {/* Action Buttons */}
+              {/* Action Buttons - Desktop */}
               <div className="hidden md:flex items-center space-x-2">
                 <button
                   onClick={handleWhatsAppClick}
@@ -177,8 +178,8 @@ export default function Navbar() {
                     <ChevronDown className="h-4 w-4 text-gray-500 hidden md:block" />
                   </button>
                   
-                  {/* Dropdown Menu - SAME LINKS AS MOBILE */}
-                  <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                  {/* Dropdown Menu */}
+                  <div className="absolute right-0 top-full mt-1 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     {/* Quick Actions */}
                     <div className="px-4 py-2">
                       <p className="text-xs font-medium text-gray-500 mb-1">Signed in as</p>
@@ -202,7 +203,7 @@ export default function Navbar() {
                     
                     <div className="border-t border-gray-100 my-2"></div>
                     
-                    {/* Action Buttons in Dropdown */}
+                    {/* Action Buttons */}
                     <div className="px-4 py-2 space-y-2">
                       <button
                         onClick={handleWhatsAppClick}
@@ -253,6 +254,7 @@ export default function Navbar() {
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg"
+                aria-label="Toggle menu"
               >
                 {isMenuOpen ? (
                   <X className="h-5 w-5" />
@@ -264,22 +266,16 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Sidebar - SAME CONTENT AS DESKTOP */}
-        <div className={`md:hidden fixed inset-0 z-50 transition-all duration-300 ${
-          isMenuOpen ? 'visible' : 'invisible'
-        }`}>
+        {/* Mobile Sidebar - SIMPLIFIED */}
+        <div className={`md:hidden fixed inset-0 z-50 ${isMenuOpen ? 'block' : 'hidden'}`}>
           {/* Overlay */}
           <div 
-            className={`absolute inset-0 bg-black transition-opacity duration-300 ${
-              isMenuOpen ? 'opacity-40' : 'opacity-0'
-            }`}
+            className="absolute inset-0 bg-black/40"
             onClick={() => setIsMenuOpen(false)}
           />
           
           {/* Sidebar */}
-          <div className={`absolute right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300 ${
-            isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}>
+          <div className="absolute right-0 top-0 h-full w-80 bg-white shadow-xl">
             
             {/* Sidebar Header */}
             <div className="p-6 border-b border-gray-100">
@@ -293,6 +289,7 @@ export default function Navbar() {
                 <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-1.5 hover:bg-gray-100 rounded-lg"
+                  aria-label="Close menu"
                 >
                   <X className="h-5 w-5 text-gray-600" />
                 </button>
@@ -335,7 +332,7 @@ export default function Navbar() {
             <div className="h-[calc(100%-160px)] overflow-y-auto">
               <div className="p-4">
                 
-                {/* Main Navigation Links - SAME AS DESKTOP */}
+                {/* Main Navigation Links */}
                 <div className="space-y-1 mb-6">
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
                     Navigation
@@ -361,7 +358,7 @@ export default function Navbar() {
                   ))}
                 </div>
 
-                {/* Action Buttons - SAME AS DESKTOP */}
+                {/* Action Buttons */}
                 <div className="mb-6">
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
                     Quick Actions
@@ -391,7 +388,7 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {/* User Dashboard Links - SAME AS DESKTOP DROPDOWN */}
+                {/* User Dashboard Links */}
                 {user && (
                   <div className="mb-6">
                     <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
@@ -431,7 +428,7 @@ export default function Navbar() {
                 {/* For Non-Users - Sign Up CTA */}
                 {!user && (
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 mb-6">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Join Creative Jobs</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Join ClassDoor Jobs</h3>
                     <p className="text-xs text-gray-600 mb-3">
                       Create account to apply for jobs and track applications
                     </p>
@@ -450,7 +447,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Feedback Modal - SAME FOR BOTH */}
+      {/* Feedback Modal */}
       {showFeedback && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
           <div className="bg-white rounded-xl max-w-md w-full">
@@ -458,7 +455,7 @@ export default function Navbar() {
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-lg font-bold text-gray-900">Share Feedback</h3>
-                  <p className="text-sm text-gray-600">Help us improve Creative Jobs</p>
+                  <p className="text-sm text-gray-600">Help us improve ClassDoor Jobs</p>
                 </div>
                 <button
                   onClick={() => setShowFeedback(false)}
@@ -530,7 +527,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Add padding to main content to prevent navbar overlap */}
+      {/* Add padding to main content */}
       <div className="pt-16"></div>
     </>
   );

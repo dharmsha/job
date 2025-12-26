@@ -178,7 +178,7 @@ const Footer = () => {
                 ].map((category, index) => (
                   <li key={index}>
                     <Link 
-                      href={`/jobs/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                      href={`/#/${category.toLowerCase().replace(/\s+/g, '-')}`}
                       className="text-gray-300 hover:text-white transition-colors flex items-center group"
                     >
                       <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2 opacity-0 group-hover:opacity-100 transition-opacity"></div>
