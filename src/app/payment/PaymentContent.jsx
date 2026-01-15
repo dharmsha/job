@@ -95,28 +95,6 @@ export default function PaymentContent() {
     ]
   };
 
-  // Free plan configuration
-  const freePlan = {
-    candidate: {
-      applicationsLimit: 5,
-      features: [
-        'Limited job applications (5/month)',
-        'Basic profile visibility',
-        'Email notifications',
-        'Community support'
-      ]
-    },
-    institute: {
-      jobPostsLimit: 3,
-      features: [
-        'Post up to 3 jobs',
-        'Basic candidate access',
-        'Email notifications',
-        'Community support'
-      ]
-    }
-  };
-
   useEffect(() => {
     const userTypeParam = searchParams.get('userType') || 'candidate';
     setUserType(userTypeParam);
@@ -181,15 +159,16 @@ export default function PaymentContent() {
                 displayName: currentUser.displayName || '',
                 userType: userType,
                 hasPaid: false,
-                paymentPlan: 'free',
+                paymentPlan: null,
                 createdAt: new Date().toISOString(),
+                // Set initial limits to 0 since no free plan
                 ...(userType === 'candidate' ? {
                   applicationsUsed: 0,
-                  applicationsLimit: freePlan.candidate.applicationsLimit,
+                  applicationsLimit: 0,
                   lastResetDate: new Date().toISOString()
                 } : {
                   jobPostsUsed: 0,
-                  jobPostsLimit: freePlan.institute.jobPostsLimit,
+                  jobPostsLimit: 0,
                   lastResetDate: new Date().toISOString()
                 })
               };
@@ -309,9 +288,9 @@ export default function PaymentContent() {
         razorpayPaymentId: paymentData.razorpay_payment_id,
         subscriptionExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
         ...(userType === 'candidate' ? {
-          applicationsLimit: -1
+          applicationsLimit: -1 // Unlimited for paid users
         } : {
-          jobPostsLimit: -1
+          jobPostsLimit: -1 // Unlimited for paid users
         })
       };
 
@@ -423,47 +402,6 @@ export default function PaymentContent() {
     }
   };
 
-  const handleFreeTrial = async () => {
-    if (confirm('You will have limited access with free plan. Continue?')) {
-      try {
-        // Update user document
-        await updateDoc(doc(db, 'users', user.uid), {
-          hasPaid: false,
-          paymentPlan: 'free',
-          paymentStatus: 'free_tier',
-          freeTrialStart: new Date().toISOString(),
-          lastLogin: new Date().toISOString()
-        });
-
-        const collectionName = userType === 'candidate' ? 'candidates' : 'institutes';
-        
-        // Update profile with free plan limits
-        const freePlanData = {
-          hasPaid: false,
-          paymentPlan: 'free',
-          subscriptionActive: false,
-          ...(userType === 'candidate' ? {
-            applicationsUsed: 0,
-            applicationsLimit: freePlan.candidate.applicationsLimit,
-            lastResetDate: new Date().toISOString()
-          } : {
-            jobPostsUsed: 0,
-            jobPostsLimit: freePlan.institute.jobPostsLimit,
-            lastResetDate: new Date().toISOString()
-          })
-        };
-
-        await updateDoc(doc(db, collectionName, user.uid), freePlanData);
-        
-        // Redirect to home page
-        router.push('/');
-
-      } catch (error) {
-        setError('Error: ' + error.message);
-      }
-    }
-  };
-
   const makeCall = (phoneNumber) => {
     window.location.href = `tel:${phoneNumber}`;
   };
@@ -548,7 +486,7 @@ export default function PaymentContent() {
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
           {/* Left Column - Plan Details */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2">
             {/* Selected Plan Card */}
             {selectedPlan && (
               <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden transform transition-all duration-300 hover:shadow-3xl">
@@ -623,46 +561,6 @@ export default function PaymentContent() {
                 </div>
               </div>
             )}
-
-            {/* Free Plan Card */}
-            <div className="bg-white rounded-3xl shadow-lg border border-gray-200 p-8">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl mb-4">
-                  <HeartHandshake className="h-8 w-8 text-gray-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Start Free</h3>
-                <div className="flex items-baseline justify-center">
-                  <span className="text-4xl font-bold text-gray-900">₹0</span>
-                  <span className="text-gray-500 ml-2">forever</span>
-                </div>
-                <p className="text-gray-600 mt-3">
-                  {userType === 'candidate' 
-                    ? `${freePlan.candidate.applicationsLimit} applications/month` 
-                    : `Post ${freePlan.institute.jobPostsLimit} jobs`}
-                </p>
-              </div>
-
-              <div className="space-y-4 mb-8">
-                {freePlan[userType].features.map((feature, index) => (
-                  <div key={index} className="flex items-center text-gray-500">
-                    <CheckCircle className="h-5 w-5 mr-3 text-green-500" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={handleFreeTrial}
-                className="w-full py-4 px-6 border-2 border-gray-300 text-gray-700 rounded-2xl font-semibold text-lg hover:bg-gray-50 transition-all hover:border-gray-400 flex items-center justify-center"
-              >
-                <HeartHandshake className="h-5 w-5 mr-2" />
-                Continue with Free Plan
-              </button>
-              
-              <p className="text-center text-gray-500 text-sm mt-4">
-                You can apply to jobs immediately after signing up
-              </p>
-            </div>
           </div>
 
           {/* Right Column - User Info & Security */}
@@ -692,20 +590,20 @@ export default function PaymentContent() {
                     <div>
                       <p className="font-medium text-gray-900">Account Status</p>
                       <p className="text-sm text-gray-600">
-                        {userProfile?.hasPaid ? 'Premium Member' : 'Free Account'}
+                        {userProfile?.hasPaid ? 'Premium Member' : 'Payment Required'}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {userProfile && userType === 'candidate' && !userProfile.hasPaid && (
-                  <div className="p-4 bg-gradient-to-r from-yellow-50 to-yellow-100/50 rounded-xl">
+                {userProfile && !userProfile.hasPaid && (
+                  <div className="p-4 bg-gradient-to-r from-red-50 to-red-100/50 rounded-xl">
                     <div className="flex items-center">
-                      <AlertCircle className="h-5 w-5 text-yellow-600 mr-3" />
+                      <AlertCircle className="h-5 w-5 text-red-600 mr-3" />
                       <div>
-                        <p className="font-medium text-gray-900">Free Plan Limit</p>
+                        <p className="font-medium text-gray-900">Access Required</p>
                         <p className="text-sm text-gray-600">
-                          {userProfile.applicationsUsed || 0}/{userProfile.applicationsLimit || 5} applications used
+                          Complete payment to unlock all features
                         </p>
                       </div>
                     </div>
