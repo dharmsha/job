@@ -49,7 +49,7 @@ const Footer = () => {
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
-                href="/signup?type=teacher"
+                href="/login?type=teacher"
                 className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-blue-50 transition-all duration-300 flex items-center justify-center group shadow-lg"
               >
                 <User className="h-5 w-5 mr-2" />
@@ -57,7 +57,7 @@ const Footer = () => {
                 <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
-                href="/signup?type=institute"
+                href="/login?type=institute"
                 className="px-6 py-3 bg-transparent border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-center group"
               >
                 <Building className="h-5 w-5 mr-2" />
@@ -143,7 +143,6 @@ const Footer = () => {
               <ul className="space-y-3">
                 {[
                   { href: '/jobs', label: 'Find Jobs', icon: <Briefcase className="h-4 w-4" /> },
-                 
                   { href: '/teachers', label: 'Teachers Directory', icon: <Users className="h-4 w-4" /> },
                   { href: '/career-advice', label: 'Career Advice', icon: <Star className="h-4 w-4" /> },
                   { href: '/about', label: 'About Us', icon: <Globe className="h-4 w-4" /> },
@@ -416,9 +415,6 @@ const Footer = () => {
               <span className="hidden md:block">Live Chat</span>
             </div>
           </a>
-          
-          {/* Alternative Contact Buttons (Mobile) */}
-         
         </div>
       </div>
 

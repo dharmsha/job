@@ -1,334 +1,171 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Heart, Target, Users, Award, Sparkles, 
-  Star, TrendingUp, Shield, BookOpen, 
-  GraduationCap, Trophy, Gem, Rocket
+  Users, Globe, Trophy, Star, Target, 
+  Heart, Shield, Zap, ArrowRight, Sparkles,
+  BookOpen, GraduationCap, Building2
 } from 'lucide-react';
 
-const OrganizationPage = () => {
-  const [counter, setCounter] = useState({
-    teachers: 0,
-    institutes: 0,
-    placements: 0,
-    success: 0
-  });
+const EducationPlatform = () => {
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCounter(prev => ({
-        teachers: prev.teachers < 525 ? prev.teachers + 100 : 525,
-        institutes: prev.institutes < 150 ? prev.institutes + 50 : 150,
-        placements: prev.placements < 1000 ? prev.placements + 200 : 1000,
-        success: prev.success < 95 ? prev.success + 1 : 95
-      }));
-    }, 30);
-
-    return () => clearInterval(interval);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const coreValues = [
-    {
-      icon: <Heart className="h-8 w-8" />,
-      title: 'Passion for Education',
-      description: 'We believe every teacher deserves the perfect platform to share their knowledge'
-    },
-    {
-      icon: <Target className="h-8 w-8" />,
-      title: 'Mission Driven',
-      description: 'Connecting passionate educators with institutions that value quality education'
-    },
-    {
-      icon: <Shield className="h-8 w-8" />,
-      title: 'Trust & Integrity',
-      description: 'Building relationships based on transparency and mutual respect'
-    }
-  ];
-
-  const achievements = [
-    { number: `${counter.teachers}+`, label: 'Educators Connected', icon: '👨‍🏫' },
-    { number: `${counter.institutes}+`, label: 'Institutions Partnered', icon: '🏫' },
-    { number: `${counter.placements}+`, label: 'Successful Placements', icon: '🎓' },
-    { number: `${counter.success}%`, label: 'Satisfaction Rate', icon: '⭐' }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden py-20 px-4">
-        {/* Animated Background */}
-        <div className="absolute inset-0">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
-        </div>
+    <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-indigo-500/30 overflow-x-hidden">
+      
+      {/* --- PREMIUM DYNAMIC BACKGROUND --- */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        {/* Deep Glows */}
+        <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[400px] h-[400px] bg-purple-600/10 rounded-full blur-[100px]" />
+        {/* Subtle Grid */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-50 contrast-150" />
+      </div>
 
-        <div className="relative max-w-6xl mx-auto text-center">
-          {/* Organization Badge */}
-          <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl mb-8">
-            <Sparkles className="h-5 w-5 text-blue-600 mr-2" />
-            <span className="text-blue-700 font-semibold">India's Premier Education Career Platform</span>
+      <div className="relative z-10 px-4 md:px-6">
+        
+        {/* --- HERO SECTION --- */}
+        <section className="pt-24 pb-16 text-center max-w-5xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-in">
+            <Sparkles className="h-4 w-4 text-indigo-400" />
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-200">India's Premier Education Career Platform</span>
           </div>
-
-          {/* Main Heading */}
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-            Where <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-              Teaching Dreams
-            </span> Take Flight
+          
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-[1]">
+            Where Teaching <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-blue-400 to-emerald-400">
+              Dreams Take Flight
+            </span>
           </h1>
-
-          {/* Tagline */}
-          <p className="text-xl md:text-2xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+          
+          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-12 font-medium leading-relaxed">
             We're building a community where passion meets purpose, and every educator finds their perfect classroom.
           </p>
 
-          {/* Stats Counter */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-            {achievements.map((item, index) => (
-              <div key={index} className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-gray-100 shadow-lg">
-                <div className="text-3xl mb-2">{item.icon}</div>
-                <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-1">{item.number}</div>
-                <div className="text-sm text-gray-600">{item.label}</div>
-              </div>
-            ))}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button className="w-full sm:w-auto px-10 py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold transition-all shadow-xl shadow-indigo-600/20 flex items-center justify-center gap-2 group">
+              For Educators <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </button>
+            <button className="w-full sm:w-auto px-10 py-4 bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
+              For Institutions
+            </button>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Our Story Section */}
-      <div className="py-20 px-4 bg-gradient-to-r from-white to-blue-50">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <BookOpen className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Our <span className="text-blue-600">Story</span>
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Born from a simple idea: Great teachers deserve great opportunities. 
-              We're on a mission to transform education by connecting talent with opportunity.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {coreValues.map((value, index) => (
-              <div key={index} className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-                <div className="p-3 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl w-fit mb-6">
-                  <div className="text-blue-600">{value.icon}</div>
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{value.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* What We Do Section */}
-      <div className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <Target className="h-12 w-12 text-purple-600 mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              What We <span className="text-purple-600">Do</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <div className="p-3 bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg">
-                    <Users className="h-6 w-6 text-green-600" />
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">For Educators</h3>
-                  <p className="text-gray-600">
-                    We provide a platform where your teaching skills are valued and rewarded. 
-                    No more endless searching - just quality opportunities that match your passion.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4">
-                <div className="flex-shrink-0">
-                  <div className="p-3 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-lg">
-                    <Building className="h-6 w-6 text-blue-600" />
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">For Institutions</h3>
-                  <p className="text-gray-600">
-                    We connect you with verified, passionate educators who share your vision 
-                    for quality education. Build your dream team with confidence.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl p-8 border border-blue-100">
-              <div className="text-center mb-6">
-                <TrendingUp className="h-8 w-8 text-blue-600 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">Our Impact in Numbers</h3>
-              </div>
-              
-              <div className="space-y-6">
-                {[
-                  { label: 'Average Response Time', value: '48 hours', color: 'text-green-600' },
-                  { label: 'Teacher Retention Rate', value: '92%', color: 'text-blue-600' },
-                  { label: 'Institute Satisfaction', value: '96%', color: 'text-purple-600' },
-                  { label: 'Career Growth Rate', value: '3x faster', color: 'text-orange-600' }
-                ].map((item, index) => (
-                  <div key={index} className="flex justify-between items-center p-3 bg-white rounded-xl">
-                    <span className="text-gray-700">{item.label}</span>
-                    <span className={`font-bold ${item.color}`}>{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Why Choose Us Section */}
-      <div className="py-20 px-4 bg-gradient-to-r from-purple-50 to-pink-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <Star className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Why We're <span className="text-yellow-600">Different</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* --- STATS GRID (Glassic Style) --- */}
+        <section className="py-12 max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              {
-                icon: '🎯',
-                title: 'Focus on Quality',
-                description: 'Every connection is meaningful and purpose-driven'
-              },
-              {
-                icon: '🤝',
-                title: 'Human-Centric',
-                description: 'Real people, real support - no algorithms deciding your future'
-              },
-              {
-                icon: '🚀',
-                title: 'Fast & Efficient',
-                description: 'From application to placement in record time'
-              },
-              {
-                icon: '❤️',
-                title: 'Passionate Team',
-                description: 'We genuinely care about education and educators'
-              }
-            ].map((item, index) => (
-              <div key={index} className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-3">{item.title}</h3>
-                <p className="text-gray-600 text-sm">{item.description}</p>
+              { val: '525+', label: 'Educators', icon: <Users className="text-blue-400" /> },
+              { val: '150+', label: 'Institutions', icon: <Building2 className="text-purple-400" /> },
+              { val: '1000+', label: 'Placements', icon: <Trophy className="text-amber-400" /> },
+              { val: '95%', label: 'Satisfaction', icon: <Star className="text-emerald-400" /> },
+            ].map((stat, i) => (
+              <div key={i} className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/10 backdrop-blur-xl hover:bg-white/[0.06] transition-all group">
+                <div className="mb-4 transform group-hover:scale-110 transition-transform">{stat.icon}</div>
+                <div className="text-3xl font-black mb-1">{stat.val}</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">{stat.label}</div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Our Vision Section */}
-      <div className="py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <Rocket className="h-12 w-12 text-orange-500 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
-            Our <span className="text-orange-600">Vision</span> for the Future
-          </h2>
-          
-          <div className="bg-gradient-to-r from-blue-900 to-purple-900 text-white rounded-3xl p-8 md:p-12">
-            <Gem className="h-16 w-16 text-yellow-300 mx-auto mb-6" />
-            <p className="text-xl md:text-2xl leading-relaxed mb-8">
-              We envision an India where every talented educator finds their perfect platform, 
-              every student learns from passionate teachers, and education truly transforms lives.
-            </p>
-            <div className="text-blue-200 text-lg">
-              Join us in building the future of education.
+        {/* --- WHAT WE DO --- */}
+        <section className="py-20 max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">What We Do</h2>
+            <div className="h-1.5 w-20 bg-indigo-600 mx-auto rounded-full" />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="p-10 rounded-[2.5rem] bg-gradient-to-b from-indigo-600/20 to-transparent border border-indigo-500/20 backdrop-blur-md relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                <GraduationCap size={120} />
+              </div>
+              <h3 className="text-3xl font-bold mb-6">For Educators</h3>
+              <p className="text-slate-400 leading-relaxed text-lg mb-8">
+                We provide a platform where your teaching skills are valued and rewarded. No more endless searching - just quality opportunities that match your passion.
+              </p>
+              <ul className="space-y-4">
+                {['Passion for Education', 'Career Growth', 'Top Opportunities'].map((item) => (
+                  <li key={item} className="flex items-center gap-3 font-semibold text-sm">
+                    <Zap className="h-4 w-4 text-indigo-400" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="p-10 rounded-[2.5rem] bg-gradient-to-b from-emerald-600/20 to-transparent border border-emerald-500/20 backdrop-blur-md relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Globe size={120} />
+              </div>
+              <h3 className="text-3xl font-bold mb-6">For Institutions</h3>
+              <p className="text-slate-400 leading-relaxed text-lg mb-8">
+                We connect you with verified, passionate educators who share your vision for quality education. Build your dream team with confidence.
+              </p>
+              <ul className="space-y-4">
+                {['Mission Driven', 'Verified Talent', 'Efficiency'].map((item) => (
+                  <li key={item} className="flex items-center gap-3 font-semibold text-sm">
+                    <Shield className="h-4 w-4 text-emerald-400" /> {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Final CTA */}
-      <div className="py-20 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <Trophy className="h-12 w-12 text-green-500 mx-auto mb-6" />
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Ready to Be Part of Something <span className="text-green-600">Bigger</span>?
-          </h2>
-          <p className="text-lg text-gray-600 mb-10 max-w-2xl mx-auto">
-            Whether you're an educator looking for your dream role or an institution seeking passionate talent, 
-            we're here to make it happen.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-              <span className="flex items-center justify-center">
-                <GraduationCap className="mr-3 h-5 w-5" />
-                For Educators
-              </span>
-            </button>
-            <button className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl">
-              <span className="flex items-center justify-center">
-                <Building className="mr-3 h-5 w-5" />
-                For Institutions
-              </span>
-            </button>
+        {/* --- IMPACT NUMBERS --- */}
+        <section className="py-20 bg-white/[0.02] rounded-[3rem] border border-white/5 my-10 overflow-hidden relative">
+          <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-4 gap-12 text-center">
+            {[
+              { l: 'Response Time', v: '48 Hours' },
+              { l: 'Teacher Retention', v: '92%' },
+              { l: 'Institute Satisfaction', v: '96%' },
+              { l: 'Growth Rate', v: '3x Faster' }
+            ].map((x, i) => (
+              <div key={i}>
+                <div className="text-4xl font-black text-indigo-400 mb-2">{x.v}</div>
+                <div className="text-xs font-bold text-slate-500 uppercase tracking-widest">{x.l}</div>
+              </div>
+            ))}
           </div>
-        </div>
-      </div>
+        </section>
 
-      {/* Simple Footer */}
-      <div className="bg-gray-900 text-white py-8 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg">
-              <BookOpen className="h-6 w-6" />
+        {/* --- FOOTER CTA --- */}
+        <section className="py-24 text-center">
+          <div className="max-w-3xl mx-auto p-12 rounded-[3rem] bg-indigo-600 relative overflow-hidden shadow-2xl shadow-indigo-600/40">
+            <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+            <h2 className="text-3xl md:text-5xl font-black mb-6 relative z-10">Ready to Be Part of Something Bigger?</h2>
+            <p className="text-indigo-100 mb-10 text-lg relative z-10 font-medium">Whether you're looking for your dream role or seeking passionate talent, we're here to make it happen.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center relative z-10">
+              <button className="px-8 py-4 bg-white text-indigo-600 rounded-2xl font-black hover:scale-105 transition-transform">Get Started Now</button>
             </div>
-            <span className="text-xl font-bold">Education Career Platform</span>
           </div>
-          <p className="text-gray-400 mb-6">
-            Building bridges between talent and opportunity in education
-          </p>
-          <div className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} All rights reserved. Made with ❤️ for education.
-          </div>
-        </div>
+          
+          <footer className="mt-20 py-10 border-t border-white/5 text-slate-500 text-sm">
+            <p>© 2026 All rights reserved. Made with ❤️ for education.</p>
+          </footer>
+        </section>
+
       </div>
 
-      {/* CSS Animations */}
       <style jsx>{`
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
+        @keyframes fade-in {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
+        .animate-fade-in {
+          animation: fade-in 1.2s ease-out forwards;
         }
       `}</style>
     </div>
   );
 };
 
-// Missing icon component
-const Building = ({ className }) => (
-  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-  </svg>
-);
-
-export default OrganizationPage;
+export default EducationPlatform;

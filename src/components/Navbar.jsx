@@ -237,15 +237,9 @@ export default function Navbar() {
                 <div className="flex items-center space-x-3">
                   <Link
                     href="/login"
-                    className="hidden md:block px-4 py-2 text-gray-600 hover:text-blue-600 font-medium"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
                     className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow"
                   >
-                    Sign Up
+                    Login
                   </Link>
                 </div>
               )}
@@ -309,22 +303,13 @@ export default function Navbar() {
                   </div>
                 </div>
               ) : (
-                <div className="flex gap-3">
-                  <Link
-                    href="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-center font-medium"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-center font-medium"
-                  >
-                    Sign Up
-                  </Link>
-                </div>
+                <Link
+                  href="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-center font-medium"
+                >
+                  Login to Your Account
+                </Link>
               )}
             </div>
 
@@ -425,19 +410,19 @@ export default function Navbar() {
                   </div>
                 )}
 
-                {/* For Non-Users - Sign Up CTA */}
+                {/* For Non-Users - Login CTA */}
                 {!user && (
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 mb-6">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Join ClassDoor Jobs</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Welcome to ClassDoor Jobs</h3>
                     <p className="text-xs text-gray-600 mb-3">
-                      Create account to apply for jobs and track applications
+                      Login to apply for jobs and track your applications
                     </p>
                     <Link
-                      href="/signup"
+                      href="/login"
                       onClick={() => setIsMenuOpen(false)}
                       className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-sm font-medium"
                     >
-                      Create Free Account
+                      Login Now
                     </Link>
                   </div>
                 )}
