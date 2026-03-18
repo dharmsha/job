@@ -70,7 +70,7 @@ export default function Navbar() {
 
   // WhatsApp click handler
   const handleWhatsAppClick = () => {
-    const phoneNumber = '917079948109';
+    const phoneNumber = '917070853444';
     const message = 'Hi! I need help with ClassDoor Jobs';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     

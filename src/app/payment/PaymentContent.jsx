@@ -450,11 +450,11 @@ export default function PaymentContent() {
                   <p className="text-red-700">{error}</p>
                   <div className="flex flex-wrap gap-3 mt-4">
                     <button
-                      onClick={() => makeCall('7079948109')}
+                      onClick={() => makeCall('7070853444')}
                       className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition flex items-center"
                     >
                       <Phone className="h-4 w-4 mr-2" />
-                      Call Support Now: 70799 48109
+                      Call Support Now: 7070853444
                     </button>
                     <button
                       onClick={() => setShowSupport(true)}
@@ -654,11 +654,11 @@ export default function PaymentContent() {
                 {/* Support Section */}
                 <div className="pt-6 border-t border-gray-700">
                   <button
-                    onClick={() => makeCall('7079948109')}
+                    onClick={() => makeCall('7070853444')}
                     className="w-full flex items-center space-x-3 hover:bg-gray-800/50 p-3 rounded-xl transition justify-center bg-blue-600 hover:bg-blue-700 mb-4"
                   >
                     <Phone className="h-5 w-5" />
-                    <span className="font-medium">Call Support: 70799 48109</span>
+                    <span className="font-medium">Call Support: 7070853444</span>
                   </button>
 
                   <div 
@@ -677,14 +677,14 @@ export default function PaymentContent() {
                       <p className="font-medium mb-3">Contact Support</p>
                       <div className="space-y-3">
                         <button
-                          onClick={() => makeCall('7079948109')}
+                          onClick={() => makeCall('7070853444')}
                           className="w-full flex items-center space-x-3 hover:text-blue-300 transition text-left"
                         >
                           <Phone className="h-4 w-4" />
-                          <span className="flex-1">Instant Call: +91 70799 48109</span>
+                          <span className="flex-1">Instant Call: +91 70708 53444</span>
                         </button>
                         <a 
-                          href="https://wa.me/917079948109"
+                          href="https://wa.me/917070853444"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center space-x-3 hover:text-blue-300 transition"
@@ -692,7 +692,7 @@ export default function PaymentContent() {
                           <div className="h-4 w-4 bg-green-500 rounded-full flex items-center justify-center">
                             <span className="text-xs font-bold text-white">W</span>
                           </div>
-                          <span>WhatsApp: +91 70799 48109</span>
+                          <span>WhatsApp: +91 70708 53444</span>
                         </a>
                         <a 
                           href="mailto:support@classdoor.in"
@@ -748,11 +748,11 @@ export default function PaymentContent() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <button
-                onClick={() => makeCall('7079948109')}
+                onClick={() => makeCall('7070853444')}
                 className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition"
               >
                 <Phone className="h-4 w-4" />
-                Emergency Support: 70799 48109
+                Emergency Support: 70708 53444
               </button>
               <div className="text-sm text-gray-500">
                 PCI DSS Level 1 Certified • ISO 27001 Certified

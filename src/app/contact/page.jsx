@@ -79,7 +79,7 @@ export default function ContactPage() {
   };
 
   const handleCallClick = () => {
-    window.open('tel:+917079948109', '_self');
+    window.open('tel:+917070853444', '_self');
   };
 
   const categories = [
@@ -724,7 +724,7 @@ export default function ContactPage() {
                 className="px-8 py-3 bg-transparent border-2 border-white text-white font-bold rounded-full hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
               >
                 <PhoneCall className="h-5 w-5 mr-2" />
-                Call +917079948109
+                Call +917070853444
               </button>
             </div>
             <p className="text-blue-200 text-sm mt-6">
