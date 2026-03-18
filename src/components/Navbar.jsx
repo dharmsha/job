@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/src/context/AuthContext';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation'; // Added useRouter
 import { 
   Menu, X, Briefcase, User, Home, 
   MessageSquare, LogOut, ChevronDown,
@@ -15,6 +15,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false); // New state for auth modal
   const [feedback, setFeedback] = useState({
     message: '',
     rating: 0
@@ -22,8 +23,9 @@ export default function Navbar() {
   
   const { user, logout, loading } = useAuth();
   const pathname = usePathname();
+  const router = useRouter(); // Added router
 
-  // SIMPLIFIED SCROLL HANDLER - FIXED
+  // SIMPLIFIED SCROLL HANDLER
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -33,13 +35,45 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // WhatsApp click handler - AS YOU WANTED
+  // Function to check auth before protected actions
+  const handleProtectedAction = (action, path) => {
+    if (!user) {
+      setShowAuthModal(true);
+      return false;
+    }
+    
+    if (path) {
+      router.push(path);
+    } else if (action) {
+      action();
+    }
+    return true;
+  };
+
+  // Handle job apply click (to be used on job cards)
+  const handleJobApply = (jobId) => {
+    if (!user) {
+      setShowAuthModal(true);
+      return false;
+    }
+    router.push(`/jobs/${jobId}/apply`);
+  };
+
+  // Handle post job click
+  const handlePostJob = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return false;
+    }
+    router.push('/jobs/post');
+  };
+
+  // WhatsApp click handler
   const handleWhatsAppClick = () => {
     const phoneNumber = '917079948109';
     const message = 'Hi! I need help with ClassDoor Jobs';
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
     
-    // Try to open in a new tab by creating an anchor and clicking it
     const a = document.createElement('a');
     a.href = whatsappUrl;
     a.target = '_blank';
@@ -76,10 +110,18 @@ export default function Navbar() {
     { href: '/teachers', label: 'Teachers', icon: <Users className="h-4 w-4 md:h-5 md:w-5" /> },
   ];
 
+  // Protected links that require login
+  const protectedLinks = [
+    { href: '/jobs/apply', label: 'Apply for Jobs', protected: true },
+    { href: '/jobs/post', label: 'Post a Job', protected: true },
+    { href: '/applications', label: 'My Applications', protected: true },
+  ];
+
   // User dashboard links
   const userDashboardLinks = user ? [
     { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="h-4 w-4" /> },
     { href: '/profile', label: 'Profile', icon: <User className="h-4 w-4" /> },
+    { href: '/applications', label: 'My Applications', icon: <Briefcase className="h-4 w-4" /> },
   ] : [];
 
   // Loading state
@@ -103,7 +145,7 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Main Navbar - SIMPLIFIED FIX */}
+      {/* Main Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 h-16 ${
         isScrolled 
           ? 'bg-white shadow-lg border-b border-gray-200' 
@@ -145,6 +187,15 @@ export default function Navbar() {
               
               {/* Action Buttons - Desktop */}
               <div className="hidden md:flex items-center space-x-2">
+                {/* Post Job Button - Protected */}
+                <button
+                  onClick={handlePostJob}
+                  className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 text-sm font-medium"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  <span>Post Job</span>
+                </button>
+
                 <button
                   onClick={handleWhatsAppClick}
                   className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 text-sm font-medium"
@@ -237,9 +288,15 @@ export default function Navbar() {
                 <div className="flex items-center space-x-3">
                   <Link
                     href="/login"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow"
+                    className="hidden md:block px-4 py-2 text-gray-600 hover:text-blue-600 font-medium"
                   >
                     Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow"
+                  >
+                    Sign Up
                   </Link>
                 </div>
               )}
@@ -260,7 +317,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Sidebar - SIMPLIFIED */}
+        {/* Mobile Sidebar */}
         <div className={`md:hidden fixed inset-0 z-50 ${isMenuOpen ? 'block' : 'hidden'}`}>
           {/* Overlay */}
           <div 
@@ -303,13 +360,22 @@ export default function Navbar() {
                   </div>
                 </div>
               ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="block w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-center font-medium"
-                >
-                  Login to Your Account
-                </Link>
+                <div className="flex gap-3">
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-center font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-center font-medium"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
               )}
             </div>
 
@@ -343,12 +409,56 @@ export default function Navbar() {
                   ))}
                 </div>
 
-                {/* Action Buttons */}
+                {/* Protected Actions for Mobile */}
+                {!user && (
+                  <div className="mb-6 p-4 bg-yellow-50 rounded-lg border border-yellow-100">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">🔒 Login Required</h3>
+                    <p className="text-xs text-gray-600 mb-3">
+                      You need to login to apply for jobs or post jobs
+                    </p>
+                    <div className="flex gap-2">
+                      <Link
+                        href="/login"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-medium text-center"
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        href="/signup"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex-1 px-3 py-2 border border-blue-600 text-blue-600 rounded-lg text-xs font-medium text-center"
+                      >
+                        Sign Up
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
+                {/* Quick Actions */}
                 <div className="mb-6">
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
                     Quick Actions
                   </h3>
                   <div className="grid grid-cols-2 gap-2">
+                    {/* Post Job - Protected */}
+                    <button
+                      onClick={() => {
+                        if (user) {
+                          router.push('/jobs/post');
+                          setIsMenuOpen(false);
+                        } else {
+                          setShowAuthModal(true);
+                          setIsMenuOpen(false);
+                        }
+                      }}
+                      className="flex flex-col items-center p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-100 rounded-lg hover:from-purple-100 hover:to-pink-100"
+                    >
+                      <Briefcase className="h-5 w-5 text-purple-600 mb-1" />
+                      <span className="text-xs font-medium text-gray-700">Post Job</span>
+                      {!user && <span className="text-[10px] text-gray-500">(Login)</span>}
+                    </button>
+
                     <button
                       onClick={() => {
                         handleWhatsAppClick();
@@ -369,6 +479,24 @@ export default function Navbar() {
                     >
                       <MessageSquare className="h-5 w-5 text-blue-600 mb-1" />
                       <span className="text-xs font-medium text-gray-700">Feedback</span>
+                    </button>
+
+                    {/* Apply for Jobs - Protected */}
+                    <button
+                      onClick={() => {
+                        if (user) {
+                          router.push('/jobs');
+                          setIsMenuOpen(false);
+                        } else {
+                          setShowAuthModal(true);
+                          setIsMenuOpen(false);
+                        }
+                      }}
+                      className="flex flex-col items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg hover:from-blue-100 hover:to-indigo-100"
+                    >
+                      <Briefcase className="h-5 w-5 text-blue-600 mb-1" />
+                      <span className="text-xs font-medium text-gray-700">Apply Jobs</span>
+                      {!user && <span className="text-[10px] text-gray-500">(Login)</span>}
                     </button>
                   </div>
                 </div>
@@ -410,19 +538,19 @@ export default function Navbar() {
                   </div>
                 )}
 
-                {/* For Non-Users - Login CTA */}
+                {/* For Non-Users - Sign Up CTA */}
                 {!user && (
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 mb-6">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-2">Welcome to ClassDoor Jobs</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-2">🚀 Join ClassDoor Jobs</h3>
                     <p className="text-xs text-gray-600 mb-3">
-                      Login to apply for jobs and track your applications
+                      Create free account to apply for jobs, post jobs, and track applications
                     </p>
                     <Link
-                      href="/login"
+                      href="/signup"
                       onClick={() => setIsMenuOpen(false)}
                       className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-sm font-medium"
                     >
-                      Login Now
+                      Create Free Account
                     </Link>
                   </div>
                 )}
@@ -431,6 +559,76 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Auth Required Modal */}
+      {showAuthModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4">
+          <div className="bg-white rounded-xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900">🔒 Login Required</h3>
+                  <p className="text-sm text-gray-600">You need to be logged in to perform this action</p>
+                </div>
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Please login or create an account to:
+                </p>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-center space-x-2">
+                    <Briefcase className="h-4 w-4 text-blue-600" />
+                    <span>Apply for jobs</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <Briefcase className="h-4 w-4 text-purple-600" />
+                    <span>Post new jobs</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <LayoutDashboard className="h-4 w-4 text-green-600" />
+                    <span>Track your applications</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <User className="h-4 w-4 text-indigo-600" />
+                    <span>Create your professional profile</span>
+                  </li>
+                </ul>
+
+                <div className="flex gap-3 pt-4">
+                  <Link
+                    href="/login"
+                    onClick={() => setShowAuthModal(false)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-center"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/signup"
+                    onClick={() => setShowAuthModal(false)}
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium text-center"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+                
+                <button
+                  onClick={() => setShowAuthModal(false)}
+                  className="w-full text-sm text-gray-500 hover:text-gray-700"
+                >
+                  Maybe later
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Feedback Modal */}
       {showFeedback && (
