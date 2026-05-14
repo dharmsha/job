@@ -13,7 +13,7 @@ export async function POST(request) {
     console.log('Key Secret exists:', !!keySecret);
     
     if (!keyId || !keySecret) {
-      console.error('❌ Missing Razorpay credentials');
+      console.error(' Missing Razorpay credentials');
       return NextResponse.json(
         { 
           success: false,
