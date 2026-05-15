@@ -288,15 +288,9 @@ export default function Navbar() {
                 <div className="flex items-center space-x-3">
                   <Link
                     href="/login"
-                    className="hidden md:block px-4 py-2 text-gray-600 hover:text-blue-600 font-medium"
+                    className="hidden md:block px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow"
                   >
                     Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium shadow-sm hover:shadow"
-                  >
-                    Sign Up
                   </Link>
                 </div>
               )}
@@ -364,16 +358,9 @@ export default function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setIsMenuOpen(false)}
-                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-center font-medium"
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    onClick={() => setIsMenuOpen(false)}
                     className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-center font-medium"
                   >
-                    Sign Up
+                    Login
                   </Link>
                 </div>
               )}
@@ -416,22 +403,13 @@ export default function Navbar() {
                     <p className="text-xs text-gray-600 mb-3">
                       You need to login to apply for jobs or post jobs
                     </p>
-                    <div className="flex gap-2">
-                      <Link
-                        href="/login"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex-1 px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-medium text-center"
-                      >
-                        Login
-                      </Link>
-                      <Link
-                        href="/signup"
-                        onClick={() => setIsMenuOpen(false)}
-                        className="flex-1 px-3 py-2 border border-blue-600 text-blue-600 rounded-lg text-xs font-medium text-center"
-                      >
-                        Sign Up
-                      </Link>
-                    </div>
+                    <Link
+                      href="/login"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="block w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-xs font-medium text-center"
+                    >
+                      Login
+                    </Link>
                   </div>
                 )}
 
@@ -538,19 +516,19 @@ export default function Navbar() {
                   </div>
                 )}
 
-                {/* For Non-Users - Sign Up CTA */}
+                {/* For Non-Users - Login CTA */}
                 {!user && (
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100 mb-6">
                     <h3 className="text-sm font-semibold text-gray-900 mb-2">🚀 Join ClassDoor Jobs</h3>
                     <p className="text-xs text-gray-600 mb-3">
-                      Create free account to apply for jobs, post jobs, and track applications
+                      Login to apply for jobs, post jobs, and track applications
                     </p>
                     <Link
-                      href="/signup"
+                      href="/login"
                       onClick={() => setIsMenuOpen(false)}
                       className="block w-full text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg text-sm font-medium"
                     >
-                      Create Free Account
+                      Login Now
                     </Link>
                   </div>
                 )}
@@ -580,7 +558,7 @@ export default function Navbar() {
 
               <div className="space-y-4">
                 <p className="text-sm text-gray-600">
-                  Please login or create an account to:
+                  Please login to:
                 </p>
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center space-x-2">
@@ -601,20 +579,13 @@ export default function Navbar() {
                   </li>
                 </ul>
 
-                <div className="flex gap-3 pt-4">
+                <div className="pt-4">
                   <Link
                     href="/login"
                     onClick={() => setShowAuthModal(false)}
-                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-center"
+                    className="block w-full px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium text-center"
                   >
-                    Login
-                  </Link>
-                  <Link
-                    href="/signup"
-                    onClick={() => setShowAuthModal(false)}
-                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-medium text-center"
-                  >
-                    Sign Up
+                    Login Now
                   </Link>
                 </div>
                 
